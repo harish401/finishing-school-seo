@@ -1,0 +1,289 @@
+@import "tailwindcss";
+
+/* ─── Design System Custom Properties ─── */
+/* Mapped from config/theme.ts — Vibrant Indigo (Ascent Educational System) */
+
+@theme {
+  /* Primary */
+  --color-primary: #2563eb;
+  --color-primary-container: #1d4ed8;
+  --color-primary-light: #dbeafe;
+  --color-primary-dim: #93c5fd;
+  --color-on-primary: #ffffff;
+  --color-on-primary-container: #eff6ff;
+
+  /* Secondary */
+  --color-secondary: #5b598c;
+  --color-secondary-container: #c7c3fe;
+  --color-on-secondary: #ffffff;
+  --color-on-secondary-container: #514f81;
+
+  /* Tertiary */
+  --color-tertiary: #46494a;
+  --color-tertiary-container: #5e6061;
+  --color-on-tertiary: #ffffff;
+
+  /* Surfaces */
+  --color-background: #f9f9ff;
+  --color-surface: #f9f9ff;
+  --color-surface-bright: #f9f9ff;
+  --color-surface-container: #e7eefe;
+  --color-surface-container-high: #e2e8f8;
+  --color-surface-container-highest: #dce2f3;
+  --color-surface-container-low: #f0f3ff;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-dim: #d3daea;
+  --color-surface-tint: #2563eb;
+  --color-surface-variant: #dce2f3;
+
+  /* On-surface */
+  --color-on-surface: #151c27;
+  --color-on-surface-variant: #464555;
+  --color-on-background: #151c27;
+
+  /* Inverse */
+  --color-inverse-surface: #2a313d;
+  --color-inverse-on-surface: #ebf1ff;
+  --color-inverse-primary: #c3c0ff;
+
+  /* Outline */
+  --color-outline: #777587;
+  --color-outline-variant: #c7c4d8;
+
+  /* Semantic */
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+  --color-on-error: #ffffff;
+  --color-on-error-container: #93000a;
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-info: #0284c7;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(30, 27, 75, 0.05);
+  --shadow-md: 0 4px 6px -2px rgba(30, 27, 75, 0.03), 0 10px 15px -3px rgba(30, 27, 75, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(30, 27, 75, 0.08), 0 4px 6px -2px rgba(30, 27, 75, 0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(30, 27, 75, 0.1), 0 10px 10px -5px rgba(30, 27, 75, 0.04);
+  --shadow-glass: 0 8px 32px rgba(30, 27, 75, 0.12);
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-DEFAULT: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+
+  /* Font Families — set by next/font in layout.tsx */
+  --font-heading: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+}
+
+/* ─── Base Styles ─── */
+@layer base {
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    font-family: var(--font-body);
+    color: var(--color-on-surface);
+    background-color: var(--color-background);
+    line-height: 1.5;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+    color: var(--color-on-surface);
+    line-height: 1.2;
+  }
+
+  /* Selection highlight with brand color */
+  ::selection {
+    background-color: var(--color-primary-light);
+    color: var(--color-primary);
+  }
+
+  /* Focus visible for accessibility */
+  :focus-visible {
+    outline: 2px solid var(--color-primary-container);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+}
+
+/* ─── Utility Classes ─── */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .glass {
+    background: rgba(249, 249, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .glass-dark {
+    background: rgba(42, 49, 61, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Premium gradient for primary CTAs */
+  .gradient-primary {
+    background-image: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-container) 100%);
+  }
+
+  /* Subtle indigo tint for hover backgrounds */
+  .hover-tint {
+    transition: background-color 0.2s ease;
+  }
+
+  .hover-tint:hover {
+    background-color: rgba(79, 70, 229, 0.06);
+  }
+
+  /* Card elevation lift on hover */
+  .card-lift {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+
+  .card-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* Section padding standard */
+  .section-padding {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+
+  @media (min-width: 1024px) {
+    .section-padding {
+      padding-top: 7rem;
+      padding-bottom: 7rem;
+    }
+  }
+
+  /* Container standard */
+  .container-main {
+    width: 100%;
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  @media (min-width: 640px) {
+    .container-main {
+      padding-left: 1.5rem;
+      padding-right: 1.5rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container-main {
+      padding-left: 4rem;
+      padding-right: 4rem;
+    }
+  }
+
+  /* Badge / chip */
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: 0.875rem;
+    font-weight: 500;
+    background-color: rgba(79, 70, 229, 0.08);
+    color: var(--color-primary-container);
+  }
+}
+
+/* ─── Animations ─── */
+@layer base {
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.5s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slide-up 0.6s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    animation: scale-in 0.4s ease-out forwards;
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  .animate-marquee {
+    display: flex;
+    width: max-content;
+    animation: marquee 30s linear infinite;
+  }
+
+  .animate-marquee:hover {
+    animation-play-state: paused;
+  }
+}
