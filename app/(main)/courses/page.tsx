@@ -95,6 +95,7 @@ export default function CoursesPage() {
   const [courses, setCourses] = useState<CourseCardData[]>(mockCourses);
   const [activeCategory, setActiveCategory] = useState("all");
   const [activeMode, setActiveMode] = useState("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -149,37 +150,47 @@ export default function CoursesPage() {
     const matchesCategory =
       activeCategory === "all" || course.category === activeCategory;
     const matchesMode = activeMode === "all" || course.mode === activeMode;
-    return matchesCategory && matchesMode;
+    const matchesSearch =
+      course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      course.description.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesMode && matchesSearch;
   });
 
   return (
     <>
       <JsonLd data={breadcrumbSchema} />
 
-      <section className="section-padding bg-surface">
-        <div className="container-main max-w-7xl mx-auto px-4 py-12 md:py-20">
+      <section className="section-padding bg-surface relative overflow-hidden">
+        {/* Abstract blueprint grid background decoration */}
+        <div className="absolute inset-0 opacity-[0.015] bg-[radial-gradient(#2563eb_1.5px,transparent_1.5px)] [background-size:24px_24px] pointer-events-none" />
+        <div className="absolute top-1/4 right-0 w-[30rem] h-[30rem] bg-primary/3 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="container-main max-w-7xl mx-auto px-4 py-12 md:py-20 relative z-10">
           <div className="text-center">
             <span className="chip mb-4">OUR COURSES</span>
             <h1 className="font-heading font-extrabold text-4xl tracking-tight text-on-surface md:text-5xl">
               Skill-Building Courses for{" "}
-              <span className="text-primary-container">Every Stage</span>
+              <span className="bg-gradient-to-r from-primary to-primary-dim bg-clip-text text-transparent">Every Stage</span>
             </h1>
-            <p className="mx-auto mt-4 max-w-2xl text-lg text-on-surface-variant">
+            <p className="mx-auto mt-4 max-w-2xl text-lg text-on-surface-variant leading-relaxed">
               From school students to working professionals — choose the right
               course to accelerate your personal and professional growth.
             </p>
           </div>
 
-          <div className="mt-12 bg-surface-container-lowest p-6 rounded-2xl border border-outline-variant/20 shadow-sm">
+          <div className="mt-12 bg-surface-container-lowest/80 backdrop-blur-md p-6 rounded-3xl border border-outline-variant/15 shadow-sm">
             <CourseFilter
               activeCategory={activeCategory}
               activeMode={activeMode}
               onCategoryChange={setActiveCategory}
               onModeChange={setActiveMode}
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              courses={courses}
             />
           </div>
 
-          <div className="mt-8">
+          <div className="mt-10">
             {loading ? (
               <div className="flex flex-col items-center justify-center py-20">
                 <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
@@ -194,3 +205,4 @@ export default function CoursesPage() {
     </>
   );
 }
+

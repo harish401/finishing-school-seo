@@ -75,8 +75,8 @@
   --radius-full: 9999px;
 
   /* Font Families — set by next/font in layout.tsx */
-  --font-heading: "Plus Jakarta Sans", system-ui, sans-serif;
-  --font-body: "Inter", system-ui, sans-serif;
+  --font-heading: "Inter", system-ui, sans-serif;
+  --font-body: "Poppins", system-ui, sans-serif;
 }
 
 /* ─── Base Styles ─── */
@@ -272,6 +272,7 @@
     from {
       transform: translateX(0);
     }
+
     to {
       transform: translateX(-50%);
     }

@@ -49,7 +49,7 @@ export function HeroBanner() {
   const [currentStep, setCurrentStep] = useState(0);
 
   // Typewriter Hook Logic
-  const words = ["Unique Mentors", "Executive Poise", "Expert Coaching", "Career Readiness"];
+  const words = ["Unique Mentors", "Medical Licensure", "Finishing School", "Dataflow Support", "Career Readiness"];
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const [currentText, setCurrentText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
@@ -115,7 +115,7 @@ export function HeroBanner() {
               className="mb-6"
             >
               <span className="inline-flex items-center px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-[10px] font-black uppercase tracking-widest text-primary backdrop-blur-sm select-none">
-                Executive Finishing School
+                Medical Licensure &amp; Finishing School
               </span>
             </motion.div>
 
@@ -146,9 +146,9 @@ export function HeroBanner() {
               animate="visible"
               className="mt-6 max-w-lg text-lg sm:text-xl leading-relaxed text-on-surface-variant"
             >
-              Bridge the gap between education and employability. Our expert-led
-              finishing school programs build confidence, communication, and
-              career-readiness skills that set you apart.
+              Bridge the gap to international careers. We offer expert coaching for
+              Overseas Medical Licensing Exams (DHA, MOH, Prometric, HAAD), comprehensive
+              Dataflow verification support, and professional Finishing School programs.
             </motion.p>
 
             <motion.div

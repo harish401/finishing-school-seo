@@ -15,9 +15,9 @@ export const revalidate = 3600;
 
 export function generateMetadata(): Metadata {
   return generateSeoMetadata({
-    title: "Finishing School for Students & Professionals",
+    title: "Overseas Medical Licensing, NEET Coaching & Dataflow Services",
     description:
-      "Unique Mentors offers skill development courses in Financial Literacy, Communication, Interview Prep, Grooming & more for school students, college students, and young professionals.",
+      "Kerala's leading coaching center for Overseas Medical Licensing Exams (DHA, MOH, Prometric, HAAD), NEET exam preparation, Dataflow verification processing, and medical careers abroad.",
     path: "/",
   });
 }

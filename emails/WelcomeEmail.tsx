@@ -65,9 +65,8 @@ export const WelcomeEmail = ({
             </div>
           </Section>
 
-          {/* Call to Action */}
           <Section style={btnContainer}>
-            <Button style={button} href="https://uniquementors.in/student/dashboard">
+            <Button style={button} href="https://uniquementors.org/student/dashboard">
               Access Your Student Portal
             </Button>
           </Section>

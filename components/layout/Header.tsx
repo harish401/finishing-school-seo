@@ -18,6 +18,7 @@ const navItems: NavItem[] = [
     children: [
       { label: 'Schools', href: '/programs/schools' },
       { label: 'Colleges', href: '/programs/colleges' },
+      { label: 'Healthcare & Medical', href: '/programs/healthcare' },
     ],
   },
   { label: 'Blog', href: '/blog' },

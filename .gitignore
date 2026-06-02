@@ -26,6 +26,8 @@ yarn-error.log*
 .env.production.local
 .env.*.local
 *.env.local
+env.yaml
+
 
 # Operating System files
 .DS_Store

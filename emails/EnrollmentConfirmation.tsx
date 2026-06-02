@@ -60,9 +60,8 @@ export const EnrollmentConfirmation = ({
             </Text>
           </Section>
 
-          {/* Call to Action */}
           <Section style={btnContainer}>
-            <Button style={button} href="https://uniquementors.in/student/dashboard">
+            <Button style={button} href="https://uniquementors.org/student/dashboard">
               Go to Student Dashboard
             </Button>
           </Section>

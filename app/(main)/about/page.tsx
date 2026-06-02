@@ -8,7 +8,7 @@ export function generateMetadata(): Metadata {
   return generateSeoMetadata({
     title: "About Us",
     description:
-      "Learn about Unique Mentors — our mission to bridge the skill gap and empower India's youth through practical finishing school education.",
+      "Your trusted partner in transforming careers through expert training, personalized guidance, and global opportunities. Founded by Dr. Deepa Seira Babu & Dr. Praveena Prathapachandran.",
     path: "/about",
   });
 }

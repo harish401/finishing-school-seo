@@ -48,7 +48,7 @@ export function buildOrganizationSchema(): WithContext<Organization> {
     url: SITE_URL,
     logo: `${SITE_URL}/icons/logo.png`,
     description:
-      "Unique Mentors offers skill development courses in Financial Literacy, Communication, Interview Prep, Grooming & more.",
+      "Unique Mentors is  leading coaching center for Overseas Medical Licensing Exams (DHA, MOH, Prometric, HAAD), NEET exam preparation, Dataflow verification services, and securing medical careers abroad.",
     sameAs: [
       "https://instagram.com/uniquementors",
       "https://facebook.com/uniquementors",

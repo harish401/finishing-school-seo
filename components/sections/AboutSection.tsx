@@ -135,24 +135,24 @@ export function AboutSection() {
                 OUR MISSION &amp; LEGACY
               </span>
               <h2 className="text-3xl font-extrabold text-on-surface sm:text-4xl lg:text-5xl font-[family-name:var(--font-heading)] leading-tight tracking-tight">
-                Shaping Tomorrow&apos;s <br />
+                Shaping Healthcare &amp; <br />
                 <span className="bg-gradient-to-r from-primary to-primary-container bg-clip-text text-transparent">
-                  Corporate Leaders Today
+                  Corporate Leaders Worldwide
                 </span>
               </h2>
             </motion.div>
             
             <motion.div className="space-y-6 text-base leading-relaxed text-on-surface-variant mt-6" variants={fadeInUp}>
               <p>
-                Unique Mentors is a premier finishing school dedicated to bridging the critical gap between traditional classroom learning and the high-demand standards of the global corporate landscape. We provide highly relevant grooming, communication competency, and professional etiquette training.
+                Unique Mentors is a multi-disciplinary academy dedicated to transforming professional careers. Through our **Medical Licensure division**, we guide healthcare professionals through the complexities of Gulf licensing exams (DHA, MOH, Prometric, HAAD) and document Dataflow verification processes.
               </p>
               
               <div className="pl-6 border-l-4 border-primary text-base font-medium italic text-on-surface py-1">
-                &ldquo;Our vision is to nurture and polish raw potential into standout professional excellence, ensuring that every participant leaves with unshakeable confidence.&rdquo;
+                &ldquo;Our vision is to empower medical and corporate aspirants with unshakeable competence, enabling them to excel internationally and lead with confidence.&rdquo;
               </div>
               
               <p>
-                Our specialized curriculums are tailored for school students, colleges, and early-career corporate executives. Through dynamic experiential learning cycles, professional feedback models, and industry interactions, we elevate personal brands.
+                Alongside medical training, our **Professional Finishing School** bridges the employability gap for school students, college graduates, and young executives by building high-demand communication skills, personal grooming, and corporate etiquette.
               </p>
             </motion.div>
             
