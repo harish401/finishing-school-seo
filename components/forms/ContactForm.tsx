@@ -63,21 +63,21 @@ export function ContactForm() {
   };
 
   const inputClasses = cn(
-    "w-full px-4 py-3 rounded-lg",
-    "bg-surface-container-lowest border border-outline-variant/30",
-    "text-on-surface placeholder:text-on-surface-variant/50",
-    "focus:outline-none focus:border-primary-container focus:ring-2 focus:ring-primary-container/20",
+    "w-full px-4 py-3 rounded-[8px]",
+    "bg-[#fffaf5] border border-[#d9e8f2]",
+    "text-[#251324] placeholder:text-[#6f5c6f]/50",
+    "focus:outline-none focus:border-[#0b5f99] focus:ring-2 focus:ring-[#0b5f99]/15",
     "transition-all duration-200",
-    "font-[family-name:var(--font-body)] text-base"
+    "font-[family-name:var(--font-body)] text-base shadow-sm"
   );
 
-  const errorClasses = "text-error text-sm mt-1 font-[family-name:var(--font-body)]";
+  const errorClasses = "text-error text-sm mt-1 font-[family-name:var(--font-body)] font-medium";
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
       {/* Name */}
       <div>
-        <label htmlFor="contact-name" className="block text-sm font-semibold text-on-surface mb-1.5 font-[family-name:var(--font-body)]">
+        <label htmlFor="contact-name" className="block text-sm font-bold text-[#251324] mb-1.5 font-[family-name:var(--font-body)]">
           Full Name *
         </label>
         <input
@@ -93,7 +93,7 @@ export function ContactForm() {
       {/* Email & Phone row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <label htmlFor="contact-email" className="block text-sm font-semibold text-on-surface mb-1.5 font-[family-name:var(--font-body)]">
+          <label htmlFor="contact-email" className="block text-sm font-bold text-[#251324] mb-1.5 font-[family-name:var(--font-body)]">
             Email *
           </label>
           <input
@@ -106,7 +106,7 @@ export function ContactForm() {
           {errors.email && <p className={errorClasses}>{errors.email.message}</p>}
         </div>
         <div>
-          <label htmlFor="contact-phone" className="block text-sm font-semibold text-on-surface mb-1.5 font-[family-name:var(--font-body)]">
+          <label htmlFor="contact-phone" className="block text-sm font-bold text-[#251324] mb-1.5 font-[family-name:var(--font-body)]">
             Phone *
           </label>
           <input
@@ -122,7 +122,7 @@ export function ContactForm() {
 
       {/* Subject */}
       <div>
-        <label htmlFor="contact-subject" className="block text-sm font-semibold text-on-surface mb-1.5 font-[family-name:var(--font-body)]">
+        <label htmlFor="contact-subject" className="block text-sm font-bold text-[#251324] mb-1.5 font-[family-name:var(--font-body)]">
           Subject *
         </label>
         <select
@@ -142,7 +142,7 @@ export function ContactForm() {
 
       {/* Message */}
       <div>
-        <label htmlFor="contact-message" className="block text-sm font-semibold text-on-surface mb-1.5 font-[family-name:var(--font-body)]">
+        <label htmlFor="contact-message" className="block text-sm font-bold text-[#251324] mb-1.5 font-[family-name:var(--font-body)]">
           Message *
         </label>
         <textarea
@@ -174,12 +174,12 @@ export function ContactForm() {
         type="submit"
         disabled={status === "loading"}
         className={cn(
-          "w-full sm:w-auto px-8 py-3.5 rounded-lg",
-          "gradient-primary text-on-primary font-semibold",
+          "w-full sm:w-auto px-8 py-3.5 rounded-[8px]",
+          "bg-[#bd168e] text-white font-extrabold shadow-md",
           "flex items-center justify-center gap-2",
-          "hover:opacity-90 transition-opacity",
-          "disabled:opacity-50 disabled:cursor-not-allowed",
-          "font-[family-name:var(--font-body)]"
+          "transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#981173] hover:shadow-lg hover:shadow-[#bd168e]/35",
+          "disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none",
+          "font-[family-name:var(--font-body)] cursor-pointer"
         )}
       >
         {status === "loading" ? (

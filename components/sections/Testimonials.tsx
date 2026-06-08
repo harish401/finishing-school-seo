@@ -1,156 +1,104 @@
 "use client";
 
-import Image from 'next/image';
-import { cn } from '@/lib/utils';
-import { Star, Quote, ShieldCheck } from 'lucide-react';
-import { motion } from 'framer-motion';
-import type { TestimonialData } from '@/types';
+import { motion } from "framer-motion";
+import { Quote, ShieldCheck } from "lucide-react";
+import { TestimonialCarousel } from "@/components/ui/testimonial";
+import type { TestimonialData } from "@/types";
 
 interface TestimonialsProps {
   testimonials: TestimonialData[];
 }
 
 const fallbackAvatars = [
-  "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200", // Female professional
-  "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=200", // Male professional
-  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200", // Female student
+  "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200",
+  "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=200",
+  "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=200",
 ];
 
 export function Testimonials({ testimonials }: TestimonialsProps) {
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
-  };
-
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.15
-      }
-    }
-  };
+  const carouselTestimonials = testimonials.map((testimonial, index) => ({
+    id: testimonial.id,
+    name: testimonial.name,
+    role: testimonial.role,
+    description: testimonial.content,
+    rating: testimonial.rating,
+    avatar: testimonial.avatar?.url || fallbackAvatars[index % fallbackAvatars.length],
+  }));
 
   return (
-    <section className="section-padding bg-surface-container-low/40 relative overflow-hidden border-t border-b border-outline-variant/15">
-      {/* Decorative background accents */}
-      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-80 h-80 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
-      <div className="absolute top-1/4 right-0 w-[30rem] h-[30rem] rounded-full bg-secondary-container/5 blur-3xl pointer-events-none" />
+    <section className="section-padding relative overflow-hidden border-y border-outline-variant/15 bg-surface-container-low/40">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_22%,rgba(37,99,235,0.08),transparent_28%),radial-gradient(circle_at_82%_64%,rgba(91,89,140,0.08),transparent_32%)]" />
 
       <div className="container-main relative z-10">
-        
-        {/* Editorial Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
+        <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <div className="max-w-2xl">
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.4 }}
+            >
+              <span className="chip border border-primary/10 bg-primary/10 text-xs font-semibold uppercase tracking-wider text-primary">
+                Alumni Impact
+              </span>
+            </motion.div>
+
+            <motion.h2
+              className="mt-5 font-heading text-3xl font-extrabold leading-tight tracking-tight text-on-surface sm:text-4xl lg:text-5xl"
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.08 }}
+            >
+              Real stories from learners who found their voice.
+            </motion.h2>
+
+            <motion.p
+              className="mt-4 text-base leading-relaxed text-on-surface-variant"
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.16 }}
+            >
+              Drag through verified reviews from school pupils, college graduates, and young professionals who trained with Unique Mentors.
+            </motion.p>
+
+            <motion.div
+              className="mt-8 grid gap-3 sm:grid-cols-2"
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.22 }}
+            >
+              <div className="rounded-lg border border-outline-variant/20 bg-white p-4 shadow-sm">
+                <Quote className="h-6 w-6 text-primary" />
+                <p className="mt-3 text-sm font-bold leading-relaxed text-on-surface">
+                  Confidence, communication, and placement readiness in one practical track.
+                </p>
+              </div>
+              <div className="rounded-lg border border-outline-variant/20 bg-white p-4 shadow-sm">
+                <ShieldCheck className="h-6 w-6 text-success" />
+                <p className="mt-3 text-sm font-bold leading-relaxed text-on-surface">
+                  Review-led coaching with visible progress after every module.
+                </p>
+              </div>
+            </motion.div>
+          </div>
+
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.4 }}
+            initial={{ opacity: 0, x: 28 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.55, ease: "easeOut" }}
+            className="relative"
           >
-            <span className="chip bg-primary/10 text-primary border border-primary/10 uppercase tracking-wider text-xs font-semibold">
-              ALUMNI IMPACT
-            </span>
+            <div className="absolute inset-8 rounded-full bg-primary/10 blur-3xl" />
+            <TestimonialCarousel
+              testimonials={carouselTestimonials}
+              className="relative mx-auto max-w-xl"
+            />
           </motion.div>
-          
-          <motion.h2 
-            className="font-heading text-3xl font-extrabold text-on-surface sm:text-4xl lg:text-5xl leading-tight tracking-tight mt-4"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-          >
-            What Our Students Say
-          </motion.h2>
-          
-          <motion.p 
-            className="mt-4 text-base text-on-surface-variant leading-relaxed"
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-          >
-            Explore verified reviews and graduation reports from our past school pupils, college graduates, and corporate professionals.
-          </motion.p>
         </div>
-
-        {/* Dynamic Asymmetric Testimonial Grid */}
-        <motion.div 
-          className="grid gap-8 md:grid-cols-2 lg:grid-cols-3"
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-        >
-          {testimonials.map((testimonial, index) => {
-            const avatarUrl = testimonial.avatar?.url || fallbackAvatars[index % fallbackAvatars.length];
-            return (
-              <motion.div
-                key={testimonial.id}
-                className={cn(
-                  'rounded-3xl bg-surface-container-lowest p-8 border border-outline-variant/15 shadow-sm',
-                  'hover:shadow-md hover:border-primary/25 transition-all duration-300 flex flex-col justify-between relative group card-lift'
-                )}
-                variants={fadeInUp}
-                whileHover={{ y: -6 }}
-              >
-                <div>
-                  {/* High-End Visual Header: Quote & Star Rating */}
-                  <div className="flex justify-between items-start mb-6">
-                    <Quote className="h-10 w-10 text-primary-light/50 shrink-0 transform -translate-x-2" />
-                    
-                    {testimonial.rating && (
-                      <div className="flex gap-0.5 mt-2 bg-warning/5 px-2.5 py-1 rounded-md border border-warning/15">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                          <Star
-                            key={i}
-                            className={cn(
-                              'h-3.5 w-3.5',
-                              i < testimonial.rating!
-                                ? 'fill-warning text-warning'
-                                : 'text-outline-variant'
-                            )}
-                          />
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Testimonial Quote */}
-                  <p className="text-sm sm:text-base leading-relaxed text-on-surface-variant italic font-medium">
-                    &ldquo;{testimonial.content}&rdquo;
-                  </p>
-                </div>
-
-                {/* Author Info block */}
-                <div className="mt-8 pt-6 border-t border-outline-variant/20 flex items-center gap-4">
-                  <div className="relative h-12 w-12 rounded-full overflow-hidden border border-primary/20 shrink-0">
-                    <Image
-                      src={avatarUrl}
-                      alt={testimonial.name}
-                      fill
-                      sizes="48px"
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <p className="text-sm font-extrabold text-on-surface group-hover:text-primary transition-colors">
-                        {testimonial.name}
-                      </p>
-                      <ShieldCheck className="h-4 w-4 text-success shrink-0" />
-                    </div>
-                    <p className="text-xs text-on-surface-variant font-medium mt-0.5">
-                      {testimonial.role}
-                    </p>
-                  </div>
-                </div>
-
-              </motion.div>
-            );
-          })}
-        </motion.div>
-
       </div>
     </section>
   );

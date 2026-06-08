@@ -14,10 +14,13 @@ const quickLinks = [
 ];
 
 const programs = [
-  { label: 'For Schools', href: '/programs/schools' },
-  { label: 'For Colleges', href: '/programs/colleges' },
-  { label: 'Healthcare Programs', href: '/courses?category=healthcare' },
-  { label: 'Professional Development', href: '/courses?category=professional' },
+  { label: 'School Programs', href: '/programs/schools' },
+  { label: 'College Programs', href: '/programs/colleges' },
+  { label: 'Healthcare Career Programs', href: '/programs/healthcare' },
+  {
+    label: 'Professional Development',
+    href: '/programs/professional-development',
+  },
 ];
 
 const socialLinks = [
@@ -39,7 +42,7 @@ export function Footer() {
               <BrandLogo className="h-9 w-auto brightness-0 invert" />
             </Link>
             <p className="text-sm leading-relaxed text-inverse-on-surface/70">
-              The ideal service center for enhancing your career. What separates Unique Mentors from the competition is the ability to give the most welcoming and straightforward service possible.
+              Colorful finishing school programs for students, graduates, healthcare aspirants, and professionals who want confidence, communication, career clarity, and workplace readiness.
             </p>
             <div className="space-y-3 pt-2 text-sm text-inverse-on-surface/70">
               <div className="flex items-start gap-2">

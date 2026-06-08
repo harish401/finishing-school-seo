@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
-import Image from "next/image";
+import InteractiveBentoGallery, {
+  type MediaItemType,
+} from "@/components/ui/interactive-bento-gallery";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 
 interface GalleryItem {
@@ -88,12 +90,29 @@ const categories = [
   { value: "certificates", label: "Certificates" },
 ];
 
-const categoryColors: Record<string, string> = {
-  workshops: "bg-primary-light/40 text-primary",
-  events: "bg-secondary-container/40 text-secondary",
-  campus: "bg-surface-container-high text-tertiary",
-  certificates: "bg-warning/10 text-warning",
-};
+const categoryLabels = categories.reduce<Record<string, string>>(
+  (labels, category) => {
+    labels[category.value] = category.label;
+    return labels;
+  },
+  {}
+);
+
+const bentoSpans = {
+  landscape: [
+    "row-span-2 sm:col-span-2 sm:row-span-3 lg:col-span-2 lg:row-span-3",
+    "row-span-2 sm:col-span-1 sm:row-span-2 lg:col-span-2 lg:row-span-3",
+    "row-span-2 sm:col-span-2 sm:row-span-2 lg:col-span-2 lg:row-span-3",
+  ],
+  portrait: [
+    "row-span-3 sm:col-span-1 sm:row-span-3 lg:col-span-1 lg:row-span-4",
+    "row-span-3 sm:col-span-2 sm:row-span-3 lg:col-span-1 lg:row-span-4",
+  ],
+  square: [
+    "row-span-2 sm:col-span-1 sm:row-span-2 lg:col-span-1 lg:row-span-3",
+    "row-span-2 sm:col-span-1 sm:row-span-2 lg:col-span-1 lg:row-span-2",
+  ],
+} satisfies Record<GalleryItem["aspect"], string[]>;
 
 export default function GalleryPage() {
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(mockGalleryItems);
@@ -138,9 +157,30 @@ export default function GalleryPage() {
     fetchGallery();
   }, []);
 
-  const filteredItems = galleryItems.filter((item) => {
-    return activeCategory === "all" || item.category === activeCategory;
-  });
+  const filteredItems = useMemo(
+    () =>
+      galleryItems.filter((item) => {
+        return activeCategory === "all" || item.category === activeCategory;
+      }),
+    [activeCategory, galleryItems]
+  );
+
+  const bentoItems = useMemo<MediaItemType[]>(
+    () =>
+      filteredItems.map((item, index) => {
+        const spanOptions = bentoSpans[item.aspect] || bentoSpans.landscape;
+
+        return {
+          id: item.id,
+          type: "image",
+          title: item.title,
+          desc: categoryLabels[item.category] ?? "Gallery",
+          url: item.image,
+          span: spanOptions[index % spanOptions.length],
+        };
+      }),
+    [filteredItems]
+  );
 
   return (
     <>
@@ -187,53 +227,8 @@ export default function GalleryPage() {
               <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary"></div>
               <p className="mt-4 text-sm text-on-surface-variant font-semibold">Loading moments...</p>
             </div>
-          ) : filteredItems.length === 0 ? (
-            <div className="text-center py-20">
-              <p className="text-on-surface-variant text-base font-semibold">No images found in this category.</p>
-            </div>
           ) : (
-            <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-              {filteredItems.map((item) => {
-                const heightClass =
-                  item.aspect === "portrait"
-                    ? "aspect-[3/4]"
-                    : item.aspect === "square"
-                    ? "aspect-square"
-                    : "aspect-video";
-                return (
-                  <div
-                    key={item.id}
-                    className="break-inside-avoid rounded-xl overflow-hidden bg-surface-container-lowest shadow-md hover:shadow-xl transition-all duration-300 card-lift group relative border border-outline-variant/30"
-                  >
-                    <div className={`${heightClass} relative bg-surface-container`}>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <Image
-                          src={item.image}
-                          alt={item.title}
-                          fill
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                        />
-                      </div>
-                      {/* Overlay */}
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                      <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-                        <span
-                          className={`inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full mb-1.5 ${
-                            categoryColors[item.category] ?? "bg-surface-container text-on-surface"
-                          }`}
-                        >
-                          {item.category}
-                        </span>
-                        <p className="text-white font-extrabold text-sm font-[family-name:var(--font-heading)]">
-                          {item.title}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            <InteractiveBentoGallery mediaItems={bentoItems} />
           )}
         </div>
       </section>

@@ -5,6 +5,7 @@ import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Play, Pause, MapPin, Mail, Phone } from "lucide-react";
+import { PillarShuffleHero } from "@/components/ui/suffle-hero";
 
 /* ─── Team Data (Real) ─── */
 const founders = [
@@ -83,18 +84,21 @@ const pillars = [
     title: "Our Vision",
     desc: "To be a global leader in career transformation and skill development by empowering individuals with exceptional training, guidance, and opportunities, shaping future-ready professionals and leaders.",
     accent: "from-primary to-primary-dim",
+    tags: ["Global Excellence", "Career Growth", "Empowering Talent", "Leadership Goals"],
   },
   {
     num: "02",
     title: "Our Mission",
     desc: "To provide innovative, high-quality training and comprehensive support services for medical and healthcare professionals to excel in licensure exams and secure international opportunities, while also nurturing young minds through our Finishing School.",
     accent: "from-emerald-500 to-teal-500",
+    tags: ["Healthcare Support", "Finishing School", "Exam Prep", "Personal Mentorship"],
   },
   {
     num: "03",
     title: "A Decade of Transformation",
     desc: "Celebrating over 11 years of impactful service, we take pride in having guided countless professionals at every stage of their journey. This milestone marks our unwavering commitment to empowering the next generation of globally minded professionals.",
     accent: "from-indigo-500 to-violet-500",
+    tags: ["11+ Years", "10,000+ Students", "Proven Results", "Trusted Guidance"],
   },
 ];
 
@@ -441,187 +445,16 @@ export function AboutPageClient() {
         </div>
       </section>
 
-      {/* ═══════════ 3. VISION / MISSION / DECADE (INTERACTIVE ORBIT REVAMP) ═══════════ */}
-      <section className="section-padding bg-surface-container-low/30 border-b border-outline-variant/15 relative overflow-hidden">
-        {/* Decorative background grid lines */}
-        <div className="absolute inset-0 opacity-[0.02] bg-[radial-gradient(#2563eb_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none" />
-        <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[30rem] h-[30rem] bg-primary/3 rounded-full blur-3xl pointer-events-none" />
+      {/* ═══════════ 3. VISION / MISSION / DECADE (SHUFFLE PILLARS) ═══════════ */}
+      <section className="section-padding relative overflow-hidden border-b border-outline-variant/15 bg-white">
+        <div className="absolute inset-0 pointer-events-none bg-[linear-gradient(to_right,rgba(37,99,235,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(37,99,235,0.05)_1px,transparent_1px)] [background-size:28px_28px]" />
 
         <div className="container-main relative z-10">
-          <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-[10px] font-bold uppercase tracking-wider mb-4">
-              Our Pillars
-            </span>
-            <h2 className="font-heading text-3xl font-extrabold text-on-surface md:text-4xl lg:text-5xl">
-              What Drives Us Forward
-            </h2>
-            <p className="mt-4 text-sm text-on-surface-variant leading-relaxed">
-              Click or hover on each pillar node below to explore our values, vision, and decade-long commitment.
-            </p>
-          </div>
-
-          <div className="grid gap-12 lg:gap-16 lg:grid-cols-12 items-center max-w-5xl mx-auto">
-            {/* Left: Interactive Radial Orbit Visualizer */}
-            <div className="lg:col-span-5 flex justify-center items-center py-6">
-              <div className="relative w-80 h-80 flex items-center justify-center bg-surface-container-lowest/40 rounded-full border border-outline-variant/10 p-8 shadow-inner">
-                {/* Dashed outer orbit rings */}
-                <div className="absolute inset-4 border border-dashed border-outline-variant/20 rounded-full animate-[spin_60s_linear_infinite]" />
-                <div className="absolute inset-16 border border-dashed border-primary/10 rounded-full animate-[spin_30s_linear_infinite_reverse]" />
-
-                {/* Ambient glow behind core */}
-                <div className="absolute h-32 w-32 rounded-full bg-primary/5 blur-xl animate-pulse" />
-
-                {/* Central Brand Core Ring */}
-                <div className="absolute h-28 w-28 rounded-full bg-surface-container-lowest border border-outline-variant/15 flex flex-col items-center justify-center text-center shadow-md z-10">
-                  <div className="h-10 w-10 relative mb-1 opacity-80 flex items-center justify-center">
-                    {/* Core Icon Fallback */}
-                    <div className="absolute inset-0 bg-primary/10 rounded-full flex items-center justify-center">
-                      <div className="h-3 w-3 rounded-full bg-primary animate-ping absolute" />
-                      <div className="h-3.5 w-3.5 rounded-full bg-primary/30 flex items-center justify-center">
-                        <div className="h-2 w-2 rounded-full bg-primary" />
-                      </div>
-                    </div>
-                  </div>
-                  <span className="text-[8px] font-black uppercase tracking-widest text-primary leading-none mt-1">Unique Core</span>
-                  <span className="text-[7px] font-bold text-on-surface-variant mt-0.5">Est. 2015</span>
-                </div>
-
-                {/* Orbital Nodes mapping */}
-                {pillars.map((p, i) => {
-                  const angle = (i * 2 * Math.PI) / pillars.length - Math.PI / 2;
-                  const radius = 108; // Orbit radius
-                  const x = Math.cos(angle) * radius;
-                  const y = Math.sin(angle) * radius;
-                  const isActive = activePillar === i;
-
-                  // CSS gradients based on active state
-                  const activeColorClass = i === 0 
-                    ? "bg-primary border-primary shadow-primary/25" 
-                    : i === 1 
-                      ? "bg-emerald-500 border-emerald-500 shadow-emerald-500/25" 
-                      : "bg-indigo-500 border-indigo-500 shadow-indigo-500/25";
-
-                  return (
-                    <div key={p.num} className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      {/* Connection SVG Path */}
-                      <svg className="absolute inset-0 w-full h-full">
-                        <line
-                          x1="160"
-                          y1="160"
-                          x2={160 + x}
-                          y2={160 + y}
-                          className={`stroke-2 transition-all duration-700 ${
-                            isActive ? "stroke-primary animate-[dash_2s_linear_infinite]" : "stroke-outline-variant/20"
-                          }`}
-                          strokeDasharray={isActive ? "none" : "5 5"}
-                        />
-                      </svg>
-
-                      {/* Interactive Button Node */}
-                      <motion.button
-                        onClick={() => setActivePillar(i)}
-                        onMouseEnter={() => setActivePillar(i)}
-                        className={`absolute pointer-events-auto flex flex-col items-center justify-center h-16 w-16 rounded-full border shadow-sm transition-all duration-500 cursor-pointer ${
-                          isActive
-                            ? `${activeColorClass} text-white scale-110 shadow-lg`
-                            : "bg-surface-container-lowest border-outline-variant/30 text-on-surface-variant hover:border-primary/50 hover:text-primary"
-                        }`}
-                        style={{ x, y }}
-                        whileHover={{ scale: 1.15 }}
-                        whileTap={{ scale: 0.95 }}
-                      >
-                        <span className="font-heading text-lg font-black leading-none">{p.num}</span>
-                        <span className="text-[7px] font-extrabold uppercase tracking-widest leading-none mt-1">
-                          {p.title.split(" ")[1] || "Pillar"}
-                        </span>
-                      </motion.button>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Right: Active Detail Drawer */}
-            <div className="lg:col-span-7">
-              <div className="relative min-h-[300px] rounded-3xl border border-outline-variant/15 bg-surface-container-lowest p-8 sm:p-10 shadow-sm overflow-hidden flex flex-col justify-center">
-                {/* Floating Big Watermark Number inside details card */}
-                <AnimatePresence mode="wait">
-                  <motion.span
-                    key={`watermark-${activePillar}`}
-                    className="absolute -top-6 -right-4 text-[130px] font-black text-outline-variant/[0.04] leading-none select-none pointer-events-none font-heading"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9 }}
-                    transition={{ duration: 0.4 }}
-                  >
-                    {pillars[activePillar].num}
-                  </motion.span>
-                </AnimatePresence>
-
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={activePillar}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.4, ease: "easeOut" }}
-                    className="relative z-10"
-                  >
-                    <span
-                      className={`inline-block font-mono text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full mb-6 border ${
-                        activePillar === 0 
-                          ? "bg-primary/10 border-primary/20 text-primary" 
-                          : activePillar === 1 
-                            ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-600" 
-                            : "bg-indigo-500/10 border-indigo-500/20 text-indigo-600"
-                      }`}
-                    >
-                      Pillar {pillars[activePillar].num}
-                    </span>
-
-                    <h3 className="font-heading text-2xl sm:text-3xl font-extrabold text-on-surface leading-tight">
-                      {pillars[activePillar].title}
-                    </h3>
-
-                    <p className="mt-5 text-base text-on-surface-variant leading-relaxed font-medium">
-                      {pillars[activePillar].desc}
-                    </p>
-
-                    <div className="mt-8 border-t border-outline-variant/15 pt-6 flex items-center gap-4">
-                      {/* Sub-features highlight depending on the active pillar */}
-                      {activePillar === 0 && (
-                        <div className="flex flex-wrap gap-2.5">
-                          {["Global Excellence", "Career Growth", "Empowering Talent", "Leadership Goals"].map((tag) => (
-                            <span key={tag} className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-primary/5 text-primary border border-primary/10">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                      {activePillar === 1 && (
-                        <div className="flex flex-wrap gap-2.5">
-                          {["Healthcare Support", "Finishing School Mastery", "Comprehensive Prep", "Syllabi Alignment"].map((tag) => (
-                            <span key={tag} className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-500/5 text-emerald-700 border border-emerald-500/10">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                      {activePillar === 2 && (
-                        <div className="flex flex-wrap gap-2.5">
-                          {["11+ Years Experience", "10,000+ Students Guided", "Proven Results", "Decade of Trust"].map((tag) => (
-                            <span key={tag} className="px-2.5 py-1 rounded-lg text-xs font-semibold bg-indigo-500/5 text-indigo-700 border border-indigo-500/10">
-                              {tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  </motion.div>
-                </AnimatePresence>
-              </div>
-            </div>
-          </div>
+          <PillarShuffleHero
+            pillars={pillars}
+            activeIndex={activePillar}
+            onActiveIndexChange={setActivePillar}
+          />
         </div>
       </section>
 

@@ -9,6 +9,7 @@ interface SeoProps {
   type?: "website" | "article";
   publishedTime?: string;
   noIndex?: boolean;
+  keywords?: string | string[];
 }
 
 /**
@@ -23,14 +24,37 @@ export function generateSeoMetadata({
   type = "website",
   publishedTime,
   noIndex = false,
+  keywords,
 }: SeoProps): Metadata {
   const url = `${SITE_URL}${path}`;
   const ogImage =
     image ?? `${SITE_URL}/api/og?title=${encodeURIComponent(title)}`;
 
+  const defaultKeywords = [
+    "finishing school",
+    "finishing school program",
+    "finishing school in India",
+    "finishing school in Kerala",
+    "finishing school in UAE",
+    "personality development",
+    "career readiness",
+    "corporate etiquette",
+    "communication skills",
+    "confidence building",
+    "public speaking",
+    "leadership development"
+  ];
+
+  const mergedKeywords = keywords
+    ? Array.isArray(keywords)
+      ? [...new Set([...keywords, ...defaultKeywords])]
+      : [...new Set([keywords, ...defaultKeywords])]
+    : defaultKeywords;
+
   return {
-    title: `${title} | ${SITE_NAME}`,
+    title,
     description,
+    keywords: mergedKeywords,
     metadataBase: new URL(SITE_URL),
     alternates: { canonical: url },
     openGraph: {

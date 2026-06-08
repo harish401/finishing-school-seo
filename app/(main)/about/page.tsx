@@ -6,10 +6,16 @@ import { AboutPageClient } from "@/components/sections/AboutPageClient";
 
 export function generateMetadata(): Metadata {
   return generateSeoMetadata({
-    title: "About Us",
+    title: "About Our Finishing School | Unique Mentors",
     description:
-      "Your trusted partner in transforming careers through expert training, personalized guidance, and global opportunities. Founded by Dr. Deepa Seira Babu & Dr. Praveena Prathapachandran.",
+      "Learn about Unique Mentors, a premier finishing school and medical licensure guidance center founded by Dr. Deepa Seira Babu & Dr. Praveena Prathapachandran.",
     path: "/about",
+    keywords: [
+      "about unique mentors",
+      "finishing school founders",
+      "finishing school vision",
+      "career guidance institute"
+    ]
   });
 }
 

@@ -3,6 +3,6 @@ export const SITE_URL =
 export const SITE_NAME =
   process.env.NEXT_PUBLIC_SITE_NAME || "Unique Mentors";
 export const SITE_DESCRIPTION =
-  "Unique Mentors offers premier coaching for Overseas Medical Licensing Exams (DHA, MOH, Prometric, HAAD), NEET exam preparation, Dataflow verification services, and comprehensive support for securing medical and nursing careers abroad.";
+  "Unique Mentors offers colorful finishing school programs for school students, college graduates, healthcare aspirants, and young professionals, including confidence building, career guidance, financial literacy, communication, etiquette, and leadership development.";
 export const PAYMENT_ENABLED =
   process.env.NEXT_PUBLIC_PAYMENT_ENABLED === "true";

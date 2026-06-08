@@ -6,10 +6,16 @@ import { CollegeProgramsClient } from "@/components/sections/CollegeProgramsClie
 
 export function generateMetadata(): Metadata {
   return generateSeoMetadata({
-    title: "Colleges Finishing School Program",
+    title: "College Graduate Finishing School Programs | Unique Mentors",
     description:
-      "Cultivating executive presence, corporate grooming, professional body language, dining etiquette, and interview preparation for collegiate young graduates and seniors.",
+      "Bridge the gap from campus to corporate life with finishing school courses in interview preparation, professional etiquette, resume writing, and personal financial literacy.",
     path: "/programs/colleges",
+    keywords: [
+      "finishing school for graduates",
+      "finishing school for college students",
+      "campus to corporate training",
+      "employability skills program"
+    ]
   });
 }
 
@@ -17,7 +23,7 @@ export default function CollegeProgramsPage() {
   const breadcrumbSchema = buildBreadcrumbSchema([
     { name: "Home", href: "/" },
     { name: "Programs", href: "#" },
-    { name: "Colleges", href: "/programs/colleges" },
+    { name: "College Programs", href: "/programs/colleges" },
   ]);
 
   return (

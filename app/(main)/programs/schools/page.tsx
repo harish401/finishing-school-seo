@@ -6,10 +6,16 @@ import { SchoolProgramsClient } from "@/components/sections/SchoolProgramsClient
 
 export function generateMetadata(): Metadata {
   return generateSeoMetadata({
-    title: "Schools Finishing School Program",
+    title: "School Student Finishing School Programs | Unique Mentors",
     description:
-      "Integrating executive finishing, confidence building, emotional intelligence, financial literacy, and social etiquette directly into premier school academic curriculums.",
+      "Transformational finishing school training for school students. Boost confidence, leadership, public speaking, communication, and time management skills.",
     path: "/programs/schools",
+    keywords: [
+      "finishing school for kids",
+      "finishing school for school students",
+      "youth leadership program",
+      "personality development for students"
+    ]
   });
 }
 
@@ -17,7 +23,7 @@ export default function SchoolProgramsPage() {
   const breadcrumbSchema = buildBreadcrumbSchema([
     { name: "Home", href: "/" },
     { name: "Programs", href: "#" },
-    { name: "Schools", href: "/programs/schools" },
+    { name: "School Programs", href: "/programs/schools" },
   ]);
 
   return (

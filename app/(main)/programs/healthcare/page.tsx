@@ -6,10 +6,16 @@ import { HealthcareProgramsClient } from "@/components/sections/HealthcareProgra
 
 export function generateMetadata(): Metadata {
   return generateSeoMetadata({
-    title: "Overseas Medical Licensing Exam Prep & Dataflow Support",
+    title: "Healthcare Finishing School & Licensure Programs | Unique Mentors",
     description:
-      "Expert coaching for DHA, MOH, HAAD/DOH, and Prometric exams under founders Dr. Deepa Seira Babu & Dr. Praveena Prathapachandran. Complete Dataflow verification support.",
+      "Unlock global opportunities. Our healthcare finishing school offers medical licensure prep, Dataflow verification, global relocation pathways, and clinical communication workshops.",
     path: "/programs/healthcare",
+    keywords: [
+      "healthcare finishing school",
+      "medical licensure preparation",
+      "prometric exam coaching",
+      "dataflow credentials verification"
+    ]
   });
 }
 
@@ -17,7 +23,7 @@ export default function HealthcareProgramsPage() {
   const breadcrumbSchema = buildBreadcrumbSchema([
     { name: "Home", href: "/" },
     { name: "Programs", href: "#" },
-    { name: "Healthcare & Medical", href: "/programs/healthcare" },
+    { name: "Healthcare Career Programs", href: "/programs/healthcare" },
   ]);
 
   return (

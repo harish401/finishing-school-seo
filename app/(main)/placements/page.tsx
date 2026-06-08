@@ -4,12 +4,14 @@ import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { supabase, isSupabaseConfigured } from "@/lib/supabase";
 import {
-  CheckCircle, Award, Building, Briefcase, GraduationCap,
-  Star, Send, ChevronLeft, ChevronRight, Quote, Users,
-  TrendingUp, MapPin, Sparkles, ArrowUpRight, Loader2, Search
+  CheckCircle, Building, Send, Users,
+  ArrowUpRight, Loader2, Search, PencilLine, Instagram
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-
+import { PencilMascot } from "@/components/brand/PencilMascot";
+import { motion } from "framer-motion";
+import RotatingEarth from "@/components/ui/wireframe-dotted-globe";
+import { InstagramEmbedCarousel } from "@/components/ui/instagram-embed-carousel";
 interface PlacedStudent {
   id: string;
   name: string;
@@ -18,7 +20,22 @@ interface PlacedStudent {
   package?: string;
   image: string;
   testimonial?: string;
+  instagramUrl?: string;
 }
+
+const instagramPlacementPosts = [
+  "https://www.instagram.com/p/DZKYX1YktFS/",
+  "https://www.instagram.com/p/DY6ieRlkkpq/",
+  "https://www.instagram.com/p/DYlyqdSspSb/",
+  "https://www.instagram.com/p/DYTx82bks6K/",
+  "https://www.instagram.com/p/DYTxuqlEuMY/",
+  "https://www.instagram.com/p/DXrZT9LkgVm/",
+  "https://www.instagram.com/p/DXoz8pskobK/",
+  "https://www.instagram.com/p/DXbjOANEqAU/",
+  "https://www.instagram.com/p/DXWZRlmkiWo/",
+  "https://www.instagram.com/p/DXMEm7vEgUy/",
+  "https://www.instagram.com/p/DX9JjkoEmCt/",
+];
 
 const mockPlacedStudents: PlacedStudent[] = [
   {
@@ -29,6 +46,7 @@ const mockPlacedStudents: PlacedStudent[] = [
     package: "4.5 LPA",
     image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80",
     testimonial: "The finishing school program completely shifted my communication style. I cleared both technical and HR panels on my very first attempt.",
+    instagramUrl: instagramPlacementPosts[0],
   },
   {
     id: "2",
@@ -38,6 +56,7 @@ const mockPlacedStudents: PlacedStudent[] = [
     package: "5.8 LPA",
     image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80",
     testimonial: "The personality development and banking interview prep gave me the confidence to present myself naturally before senior executives.",
+    instagramUrl: instagramPlacementPosts[1],
   },
   {
     id: "3",
@@ -47,6 +66,7 @@ const mockPlacedStudents: PlacedStudent[] = [
     package: "4.2 LPA",
     image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=400&q=80",
     testimonial: "From resume writing to mock group discussions, every detail was covered. The tough mock reviews were incredibly accurate to real interviews.",
+    instagramUrl: instagramPlacementPosts[2],
   },
   {
     id: "4",
@@ -56,6 +76,7 @@ const mockPlacedStudents: PlacedStudent[] = [
     package: "6.5 LPA",
     image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80",
     testimonial: "Unique Mentors gave me a structured path from confusion to clarity. My aptitude scores improved drastically within 3 weeks of joining.",
+    instagramUrl: instagramPlacementPosts[3],
   },
   {
     id: "5",
@@ -65,45 +86,7 @@ const mockPlacedStudents: PlacedStudent[] = [
     package: "5.2 LPA",
     image: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?auto=format&fit=crop&w=400&q=80",
     testimonial: "The GD and interview simulation sessions were very real. I felt fully prepared walking into the final round — completely calm and focused.",
-  },
-];
-
-const STATS = [
-  {
-    label: "Placement Success Rate",
-    value: "95%",
-    icon: TrendingUp,
-    accent: "text-success",
-    bgGlow: "bg-success/5",
-    borderStyle: "border-l-success",
-    description: "Certified career readiness outcomes"
-  },
-  {
-    label: "Active Hiring Partners",
-    value: "120+",
-    icon: Building,
-    accent: "text-primary",
-    bgGlow: "bg-primary/5",
-    borderStyle: "border-l-primary",
-    description: "Corporate recruitment network"
-  },
-  {
-    label: "Average Package",
-    value: "6.2 LPA",
-    icon: Briefcase,
-    accent: "text-info",
-    bgGlow: "bg-info/5",
-    borderStyle: "border-l-info",
-    description: "Industry-competitive starting wage"
-  },
-  {
-    label: "Highest Package",
-    value: "15 LPA",
-    icon: Award,
-    accent: "text-warning",
-    bgGlow: "bg-warning/5",
-    borderStyle: "border-l-warning",
-    description: "Peak individual valuation"
+    instagramUrl: instagramPlacementPosts[4],
   },
 ];
 
@@ -154,7 +137,6 @@ function AnimatedNumber({ value, inView }: { value: string; inView: boolean }) {
 export default function PlacementsPage() {
   const [placedStudents, setPlacedStudents] = useState<PlacedStudent[]>(mockPlacedStudents);
   const [loading, setLoading] = useState(true);
-  const [activeCard, setActiveCard] = useState(0);
   const [activeTab, setActiveTab] = useState<"seeker" | "employer">("seeker");
 
   // Search & Filter State
@@ -162,7 +144,6 @@ export default function PlacementsPage() {
   const [selectedTag, setSelectedTag] = useState("All");
 
   const statsRef = useInView();
-  const carouselRef = useInView(0.1);
 
   // Seeker form
   const [seekerForm, setSeekerForm] = useState({
@@ -192,7 +173,7 @@ export default function PlacementsPage() {
           .order("created_at", { ascending: false });
         if (error) throw error;
         if (data && data.length > 0) {
-          setPlacedStudents(data.map((item: any) => ({
+          setPlacedStudents(data.map((item: any, index: number) => ({
             id: item.id,
             name: item.name,
             company: item.company,
@@ -200,6 +181,7 @@ export default function PlacementsPage() {
             package: item.package || undefined,
             image: item.image_url,
             testimonial: item.testimonial || undefined,
+            instagramUrl: item.instagram_url || instagramPlacementPosts[index % instagramPlacementPosts.length],
           })));
         }
       } catch (err) {
@@ -210,15 +192,6 @@ export default function PlacementsPage() {
     }
     fetchPlacedStudents();
   }, []);
-
-  // Auto-advance carousel
-  useEffect(() => {
-    if (loading || placedStudents.length === 0) return;
-    const t = setInterval(() => {
-      setActiveCard((c) => (c + 1) % placedStudents.length);
-    }, 4500);
-    return () => clearInterval(t);
-  }, [loading, placedStudents.length]);
 
   const handleSeekerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -275,10 +248,8 @@ export default function PlacementsPage() {
     }
   };
 
-  // Dynamically compute existing companies from the students list to offer filters
   const availableCompanies = ["All", ...Array.from(new Set(placedStudents.map(s => s.company)))];
 
-  // Filter logic
   const filteredStudents = placedStudents.filter(s => {
     const matchesSearch =
       s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -291,87 +262,93 @@ export default function PlacementsPage() {
     return matchesSearch && matchesTag;
   });
 
-  const inputClass = "w-full bg-surface-container border border-outline-variant/40 rounded-xl px-4 py-3.5 text-sm text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all duration-200";
-  const labelClass = "block text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-2";
+  const placementEmbedPosts = Array.from(
+    new Set([
+      ...placedStudents
+        .map((student) => student.instagramUrl)
+        .filter((url): url is string => Boolean(url)),
+      ...instagramPlacementPosts,
+    ])
+  );
+
+  const inputClass = "w-full bg-[#fffaf5] border border-[#d9e8f2] rounded-[8px] px-4 py-3 text-sm text-[#251324] placeholder:text-[#6f5c6f]/40 focus:outline-none focus:border-[#0b5f99] focus:ring-2 focus:ring-[#0b5f99]/15 shadow-sm transition-all duration-200";
+  const labelClass = "block text-xs font-bold text-[#6f5c6f] uppercase tracking-widest mb-1.5";
 
   return (
-    <section className="bg-surface min-h-screen">
-      {/* ── HERO ─────────────────────────────────────────────────────── */}
-      <div className="relative overflow-hidden border-b border-outline-variant/20 bg-gradient-to-b from-surface-container-low/40 to-surface">
-        {/* Modern Mesh Radial Overlay */}
-        <div className="pointer-events-none absolute -top-48 left-1/4 w-[800px] h-[500px] rounded-full bg-primary/8 blur-3xl opacity-60" />
-        <div className="pointer-events-none absolute -top-48 right-1/4 w-[600px] h-[600px] rounded-full bg-secondary/5 blur-3xl opacity-50" />
+    <section className="bg-white min-h-screen relative isolate overflow-hidden font-[family-name:var(--font-body)] text-[#675667]">
 
-        {/* Glowing grid background */}
+      {/* ── HERO WITH ASYMMETRIC COLOR SHAPE ─────────────────────────── */}
+      <div className="relative overflow-hidden pt-20 pb-16">
+        {/* Asymmetric blue backdrop polygon */}
         <div
-          className="pointer-events-none absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage: "linear-gradient(var(--color-outline) 1px, transparent 1px), linear-gradient(90deg, var(--color-outline) 1px, transparent 1px)",
-            backgroundSize: "32px 32px",
-          }}
+          className="absolute inset-y-0 left-0 -z-10 w-[45%] bg-[#e8f6ff] opacity-90 hidden lg:block"
+          style={{ clipPath: "polygon(0 0, 85% 0, 100% 100%, 0 100%)" }}
         />
 
-        <div className="max-w-7xl mx-auto px-6 pt-24 pb-16 relative">
+        {/* Glowing atmospheric dots */}
+        <div className="pointer-events-none absolute -top-48 left-1/4 w-[800px] h-[500px] rounded-full bg-primary/5 blur-3xl opacity-60" />
+        <div className="pointer-events-none absolute -top-48 right-1/4 w-[600px] h-[600px] rounded-full bg-secondary/5 blur-3xl opacity-50" />
+
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-12">
-            <div className="max-w-3xl space-y-6">
-              {/* Pulsing Live Badge */}
-              <div className="inline-flex items-center gap-2.5 bg-surface-container border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-full shadow-sm">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-success"></span>
-                </span>
+            <div className="max-w-3xl space-y-6 text-left">
+              {/* Premium Brand Motif Badge */}
+              <div className="inline-flex items-center gap-2 rounded-[8px] bg-[#0b5f99] px-3.5 py-2 text-xs font-black uppercase tracking-[0.16em] text-white">
+                <PencilLine className="h-4 w-4 text-[#ffcf72]" />
                 Placement Tracker: 2024–2025
               </div>
 
-              <h1 className="font-heading font-extrabold text-5xl md:text-6xl lg:text-7xl leading-[1.05] tracking-tight text-on-surface text-balance">
+              <h1 className="font-heading font-black text-5xl md:text-6xl lg:text-7xl leading-[1.05] tracking-tight text-[#251324] text-balance">
                 Bridging Ambition<br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary-container">to Global Opportunities</span>
+                <span className="text-[#bd168e]">to Global Careers</span>
               </h1>
 
-              <p className="text-lg md:text-xl text-on-surface-variant leading-relaxed max-w-2xl font-light">
+              <p className="text-lg md:text-xl text-[#675667] leading-relaxed max-w-2xl font-medium">
                 Unique Mentors is Kerala's premium finishing school, empowering ambitious graduates with polished business communication, critical thinking, and recruiter-vetted professional skills.
               </p>
 
               <div className="flex flex-wrap items-center gap-4 pt-2">
                 <a
                   href="#join-network"
-                  className="gradient-primary text-white hover:shadow-lg transition-all duration-300 font-bold px-7 py-3.5 rounded-xl text-sm flex items-center gap-2"
+                  className="bg-[#bd168e] text-white font-extrabold shadow-md px-7 py-3.5 rounded-[8px] text-sm flex items-center gap-2 transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#981173] hover:shadow-lg hover:shadow-[#bd168e]/35"
                 >
                   Register for Placements <ArrowUpRight className="h-4 w-4" />
                 </a>
                 <a
                   href="#all-graduates"
-                  className="bg-surface-container hover:bg-surface-container-high border border-outline-variant/30 text-on-surface hover:text-primary transition-all duration-200 font-bold px-7 py-3.5 rounded-xl text-sm"
+                  className="bg-white border border-[#d9e8f2] hover:border-[#0b5f99] hover:text-[#0b5f99] text-[#251324] font-extrabold px-7 py-3.5 rounded-[8px] text-sm transition-all duration-200"
                 >
                   Explore Student Success
                 </a>
               </div>
             </div>
 
-            {/* Featured Metric Box */}
-            <div className="relative shrink-0 w-full lg:w-96">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-primary/30 to-secondary/30 rounded-3xl blur-xl opacity-50" />
-              <div className="relative bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-8 shadow-xl">
-                <div className="flex items-center justify-between mb-6">
-                  <span className="text-xs font-bold text-primary uppercase tracking-widest">Active Intake Status</span>
-                  <span className="text-xs font-extrabold text-success bg-success/8 border border-success/15 px-2.5 py-1 rounded-full">Open</span>
+            {/* Placement globe */}
+            <div className="relative w-full shrink-0 lg:w-[32rem]">
+              <div className="absolute -inset-4 rounded-[32px] bg-[#0b5f99]/10 blur-3xl" />
+              <div className="relative overflow-hidden rounded-[24px] border-[5px] border-white bg-[#101827] p-4 shadow-2xl">
+                <div className="absolute left-5 top-5 z-20 rounded-[8px] border border-white/10 bg-white/10 px-3 py-2 backdrop-blur">
+                  <p className="text-[10px] font-black uppercase tracking-[0.16em] text-[#ffcf72]">
+                    Placement Map
+                  </p>
+                  <p className="mt-1 text-xs font-semibold text-white/75">
+                    Kochi-trained candidates. Wider career routes.
+                  </p>
                 </div>
-
-                <div className="space-y-4">
-                  <div className="p-4 bg-surface-container rounded-2xl border border-outline-variant/10">
-                    <p className="text-xs text-on-surface-variant font-medium">Average Interview Turnaround</p>
-                    <p className="text-xl font-bold text-on-surface mt-1">4.8 Working Days</p>
+                <RotatingEarth width={520} height={430} className="pt-10" />
+                <div className="grid gap-3 border-t border-white/10 pt-4 sm:grid-cols-2">
+                  <div className="rounded-[12px] border border-white/10 bg-white/8 p-4">
+                    <p className="text-[10px] font-black uppercase tracking-[0.16em] text-white/50">
+                      Interview Turnaround
+                    </p>
+                    <p className="mt-1 text-2xl font-black text-white">4.8 Days</p>
                   </div>
-
-                  <div className="p-4 bg-surface-container rounded-2xl border border-outline-variant/10">
-                    <p className="text-xs text-on-surface-variant font-medium">Recruitment Cost for Partners</p>
-                    <p className="text-xl font-bold text-primary mt-1">0% Placement Fees</p>
+                  <div className="rounded-[12px] border border-white/10 bg-white/8 p-4">
+                    <p className="text-[10px] font-black uppercase tracking-[0.16em] text-white/50">
+                      Candidate Fee
+                    </p>
+                    <p className="mt-1 text-2xl font-black text-[#ffcf72]">0%</p>
                   </div>
-                </div>
-
-                <div className="mt-6 flex items-center gap-3 text-xs text-on-surface-variant font-medium leading-relaxed">
-
-                  <span>Pre-screened candidates prepared with soft skills, banking certifications, and tech frameworks.</span>
                 </div>
               </div>
             </div>
@@ -380,27 +357,26 @@ export default function PlacementsPage() {
       </div>
 
       {/* Infinite Logo Marquee Ticker */}
-      <div className="bg-surface-container-low border-b border-outline-variant/20 py-10 overflow-hidden relative">
-        <div className="pointer-events-none absolute left-0 inset-y-0 w-32 bg-gradient-to-r from-surface-container-low to-transparent z-10" />
-        <div className="pointer-events-none absolute right-0 inset-y-0 w-32 bg-gradient-to-l from-surface-container-low to-transparent z-10" />
+      <div className="bg-[#fffaf5] border-y border-[#d9e8f2] py-8 overflow-hidden relative">
+        <div className="pointer-events-none absolute left-0 inset-y-0 w-32 bg-gradient-to-r from-[#fffaf5] to-transparent z-10" />
+        <div className="pointer-events-none absolute right-0 inset-y-0 w-32 bg-gradient-to-l from-[#fffaf5] to-transparent z-10" />
 
         <div className="max-w-7xl mx-auto px-6 mb-4 flex items-center justify-between">
-          <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest">Empowering Careers at Elite Enterprises</p>
+          <p className="text-xs font-bold text-[#6f5c6f] uppercase tracking-widest">Empowering Careers at Elite Enterprises</p>
         </div>
 
         <div className="relative w-full flex items-center">
           <div className="animate-marquee flex gap-12 whitespace-nowrap">
-            {/* Set of logos */}
             {COMPANIES.concat(COMPANIES).concat(COMPANIES).map((company, idx) => (
               <div
                 key={`${company}-${idx}`}
-                className="flex items-center gap-2.5 bg-surface-container-lowest border border-outline-variant/30 px-6 py-3 rounded-2xl shadow-sm hover:border-primary/40 hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer"
+                className="flex items-center gap-2.5 bg-white border border-[#d9e8f2] px-6 py-3 rounded-xl shadow-sm hover:border-[#0b5f99] hover:-translate-y-0.5 transition-all duration-300 group cursor-pointer"
               >
-                <div className="w-2.5 h-2.5 rounded-full bg-primary/20 group-hover:bg-primary transition-colors" />
-                <span className="text-sm font-extrabold text-on-surface-variant group-hover:text-primary transition-colors">
+                <div className="w-2.5 h-2.5 rounded-full bg-[#0b5f99]/20 group-hover:bg-[#0b5f99] transition-colors" />
+                <span className="text-sm font-extrabold text-[#6f5c6f] group-hover:text-[#251324] transition-colors">
                   {company}
                 </span>
-                <span className="text-xs font-medium text-on-surface-variant/40 bg-surface-container px-2 py-0.5 rounded-md group-hover:text-primary-container transition-colors">
+                <span className="text-[10px] font-bold text-[#6f5c6f]/50 bg-[#e8f6ff] px-2 py-0.5 rounded-md group-hover:text-[#0b5f99] transition-colors">
                   Hiring Partner
                 </span>
               </div>
@@ -409,35 +385,35 @@ export default function PlacementsPage() {
         </div>
       </div>
 
-      {/* ── STATS ────────────────────────────────────────────────────── */}
+      {/* ── STATS SECTION ────────────────────────────────────────────── */}
       <div ref={statsRef.ref} className="max-w-7xl mx-auto px-6 py-20 relative">
-        <div className="relative overflow-hidden bg-slate-950 text-white rounded-[32px] p-8 md:p-12 lg:p-16 shadow-2xl border border-white/10">
-          {/* Dynamic Background Glows */}
-          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/20 rounded-full blur-[100px] opacity-40 pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-success/10 rounded-full blur-[100px] opacity-30 pointer-events-none" />
+        <div className="relative overflow-hidden bg-[#251324] text-white rounded-[24px] p-8 md:p-12 lg:p-16 shadow-2xl border border-white/10">
+          {/* Subtle background overlay gradient */}
+          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px] opacity-40 pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-success/5 rounded-full blur-[100px] opacity-30 pointer-events-none" />
 
-          <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center relative z-10">
-            {/* Hero Stat Block (Left - 5 Cols) */}
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center relative z-10 text-left">
+            {/* Primary Success Stat Card (Left - 5 Cols) */}
             <div className="lg:col-span-5 space-y-6 lg:border-r lg:border-white/10 lg:pr-12">
-              <div className="inline-flex items-center gap-2 bg-success/10 border border-success/30 text-success text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">
-                Audited Career Metric
+              <div className="inline-flex items-center gap-2 bg-[#fffaf5]/10 border border-white/20 text-[#ffcf72] text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full">
+                Audited Career Outcome
               </div>
 
-              <div className="space-y-2">
-                <div className="text-7xl md:text-8xl font-black font-heading tracking-tighter text-transparent bg-clip-text bg-gradient-to-r from-success to-primary">
+              <div className="space-y-1">
+                <div className="text-7xl md:text-8xl font-black font-heading tracking-tighter text-[#ffcf72]">
                   {statsRef.inView ? <AnimatedNumber value="95%" inView={statsRef.inView} /> : "—"}
                 </div>
-                <h3 className="text-2xl font-extrabold tracking-tight text-white">Placement Success Rate</h3>
+                <h3 className="text-2xl font-black tracking-tight text-white">Placement Success Rate</h3>
               </div>
 
-              <p className="text-sm text-slate-400 leading-relaxed font-light">
-                Our verified curriculum guarantees that 95% of enrolled candidates transition into formal corporate roles within 90 days of graduation. This audited success rate makes Unique Mentors Kerala’s highly reliable career bridge.
+              <p className="text-sm text-white/70 leading-relaxed font-medium">
+                Our curriculum guarantees that 95% of candidates transition into formal corporate roles within 90 days of graduation. This audited success rate makes Unique Mentors Kerala’s highly reliable career bridge.
               </p>
 
               <div className="flex items-center gap-3 pt-2">
                 <div className="flex -space-x-2">
                   {[1, 2, 3, 4].map((i) => (
-                    <div key={i} className="relative w-8 h-8 rounded-full border-2 border-slate-950 overflow-hidden bg-slate-800">
+                    <div key={i} className="relative w-8 h-8 rounded-full border-2 border-[#251324] overflow-hidden bg-slate-800">
                       <Image
                         src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80"
                         alt="Student Avatar"
@@ -447,194 +423,87 @@ export default function PlacementsPage() {
                     </div>
                   ))}
                 </div>
-                <span className="text-xs font-semibold text-slate-400">Joined by 1,400+ placed alumni</span>
+                <span className="text-xs font-semibold text-white/60">Joined by 1,400+ placed alumni</span>
               </div>
             </div>
 
-            {/* Grid Stats Block (Right - 7 Cols) */}
+            {/* Sub-Metrics Cards (Right - 7 Cols) */}
             <div className="lg:col-span-7 grid sm:grid-cols-3 gap-8 sm:gap-6 md:pl-4">
-              {/* Metric 2: Active Hiring Partners */}
-              <div className="space-y-4">
-                <div className="p-3 rounded-xl bg-primary/10 border border-primary/20 w-fit">
-
+              {/* Metric 2: Partners */}
+              <div className="space-y-3">
+                <div className="text-4xl md:text-5xl font-black text-[#ffcf72] font-heading">
+                  {statsRef.inView ? <AnimatedNumber value="120+" inView={statsRef.inView} /> : "—"}
                 </div>
-                <div className="space-y-1">
-                  <div className="text-4xl md:text-5xl font-black tracking-tight text-white font-heading">
-                    {statsRef.inView ? <AnimatedNumber value="120+" inView={statsRef.inView} /> : "—"}
-                  </div>
-                  <h4 className="text-sm font-bold text-slate-200">Hiring Partners</h4>
-                </div>
-                <p className="text-xs text-slate-400 leading-relaxed font-light">Direct recruitment tie-ups spanning premier banks and tech MNCs.</p>
+                <h4 className="text-sm font-bold text-white uppercase tracking-wider">Hiring Partners</h4>
+                <p className="text-xs text-white/60 leading-relaxed">Direct vacancies across major private banks, tech hubs, and MNCs.</p>
               </div>
 
-              {/* Metric 3: Average Package */}
-              <div className="space-y-4 sm:border-l sm:border-white/10 sm:pl-8">
-                <div className="p-3 rounded-xl bg-info/10 border border-info/20 w-fit">
-
+              {/* Metric 3: Average Salary */}
+              <div className="space-y-3 sm:border-l sm:border-white/10 sm:pl-8">
+                <div className="text-4xl md:text-5xl font-black text-[#ffcf72] font-heading">
+                  {statsRef.inView ? <AnimatedNumber value="6.2 LPA" inView={statsRef.inView} /> : "—"}
                 </div>
-                <div className="space-y-1">
-                  <div className="text-4xl md:text-5xl font-black tracking-tight text-white font-heading">
-                    {statsRef.inView ? <AnimatedNumber value="6.2 LPA" inView={statsRef.inView} /> : "—"}
-                  </div>
-                  <h4 className="text-sm font-bold text-slate-200">Average Package</h4>
-                </div>
-                <p className="text-xs text-slate-400 leading-relaxed font-light">Highly competitive salary standards for graduating freshers.</p>
+                <h4 className="text-sm font-bold text-white uppercase tracking-wider">Average CTC</h4>
+                <p className="text-xs text-white/60 leading-relaxed">Industry-competitive wage offers secured by graduating cohorts.</p>
               </div>
 
               {/* Metric 4: Highest Package */}
-              <div className="space-y-4 sm:border-l sm:border-white/10 sm:pl-8">
-                <div className="p-3 rounded-xl bg-warning/10 border border-warning/20 w-fit">
-
+              <div className="space-y-3 sm:border-l sm:border-white/10 sm:pl-8">
+                <div className="text-4xl md:text-5xl font-black text-[#ffcf72] font-heading">
+                  {statsRef.inView ? <AnimatedNumber value="15 LPA" inView={statsRef.inView} /> : "—"}
                 </div>
-                <div className="space-y-1">
-                  <div className="text-4xl md:text-5xl font-black tracking-tight text-white font-heading">
-                    {statsRef.inView ? <AnimatedNumber value="15 LPA" inView={statsRef.inView} /> : "—"}
-                  </div>
-                  <h4 className="text-sm font-bold text-slate-200">Highest Package</h4>
-                </div>
-                <p className="text-xs text-slate-400 leading-relaxed font-light">Peak individual salary logged by our top-ranking candidates.</p>
+                <h4 className="text-sm font-bold text-white uppercase tracking-wider">Highest Package</h4>
+                <p className="text-xs text-white/60 leading-relaxed">Peak evaluation logged by top-ranking students this session.</p>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ── ALUMNI CAROUSEL ──────────────────────────────────────────── */}
-      <div ref={carouselRef.ref} className="bg-surface-container-low border-y border-outline-variant/20 py-24">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-16 gap-6">
+      {/* ── ALUMNI INSTAGRAM EMBEDS ───────────────────────────────────── */}
+      <div className="bg-[#e8f6ff] border-y border-[#d9e8f2] py-24 relative overflow-hidden">
+        {/* Soft background visual arches */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/20 rounded-full blur-3xl pointer-events-none" />
+
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 text-left">
             <div>
-              <p className="text-xs font-bold text-primary uppercase tracking-widest mb-2">Success Stories</p>
-              <h2 className="text-3xl md:text-4xl font-extrabold font-heading text-on-surface tracking-tight">Our Placed Alumni</h2>
-              <p className="text-sm text-on-surface-variant mt-2 max-w-lg">
-                Read direct testimonies of our graduates and witness the direct impact of professional finishing school training.
+              <p className="text-xs font-black text-[#0b5f99] uppercase tracking-widest mb-2 font-mono">Success Spotlights</p>
+              <h2 className="text-3xl md:text-4xl font-black font-heading text-[#251324] tracking-tight">Instagram-verified Placement Stories</h2>
+              <p className="text-sm text-[#675667] mt-2 max-w-lg font-medium">
+                Candidate outcomes are shown directly from Unique Mentors Instagram posts, keeping the original placement photos and captions visible.
               </p>
             </div>
-            <div className="flex items-center gap-3 shrink-0">
-              <button
-                onClick={() => setActiveCard((c) => (c - 1 + placedStudents.length) % placedStudents.length)}
-                className="w-11 h-11 rounded-full border border-outline-variant/40 bg-surface-container-lowest flex items-center justify-center text-on-surface-variant hover:border-primary hover:text-primary hover:shadow-sm transition-all"
-                aria-label="Previous"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </button>
-              <button
-                onClick={() => setActiveCard((c) => (c + 1) % placedStudents.length)}
-                className="w-11 h-11 rounded-full border border-outline-variant/40 bg-surface-container-lowest flex items-center justify-center text-on-surface-variant hover:border-primary hover:text-primary hover:shadow-sm transition-all"
-                aria-label="Next"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </button>
+            <div className="rounded-[8px] border border-[#0b5f99]/15 bg-white px-4 py-3 text-xs font-black uppercase tracking-[0.14em] text-[#0b5f99]">
+              {placementEmbedPosts.length} source posts
             </div>
           </div>
 
           {loading ? (
             <div className="flex items-center justify-center py-20">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <Loader2 className="h-8 w-8 animate-spin text-[#0b5f99]" />
             </div>
           ) : (
             <>
-              {/* Featured card */}
-              <div className="grid md:grid-cols-5 gap-8 mb-8 items-stretch">
-                <div className="md:col-span-3 bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-8 md:p-12 flex flex-col justify-between relative overflow-hidden shadow-sm">
-                  <div className="absolute top-8 right-10 text-primary/8 pointer-events-none">
-                    <Quote className="h-24 w-24" />
-                  </div>
+              <InstagramEmbedCarousel posts={placementEmbedPosts} />
 
-                  <div className="relative z-10">
-                    <div className="flex items-center gap-1.5 text-warning mb-6">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="h-4.5 w-4.5 fill-warning stroke-none" />
-                      ))}
-                    </div>
-
-                    {placedStudents[activeCard]?.testimonial && (
-                      <p className="text-lg md:text-xl text-on-surface leading-relaxed font-medium mb-8 italic">
-                        &ldquo;{placedStudents[activeCard].testimonial}&rdquo;
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="flex items-center justify-between pt-6 border-t border-outline-variant/20 relative z-10">
-                    <div className="flex items-center gap-4">
-                      <div className="relative h-14 w-14 rounded-2xl overflow-hidden border-2 border-primary/20 shrink-0">
-                        <Image
-                          src={placedStudents[activeCard]?.image || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80"}
-                          alt={placedStudents[activeCard]?.name || "Student"}
-                          fill
-                          className="object-cover"
-                        />
-                      </div>
-                      <div>
-                        <p className="font-extrabold text-on-surface text-base">{placedStudents[activeCard]?.name}</p>
-                        <p className="text-xs text-on-surface-variant font-medium">{placedStudents[activeCard]?.designation}</p>
-                      </div>
-                    </div>
-
-                    <div className="text-right shrink-0">
-                      <span className="inline-block text-xs font-bold text-primary bg-primary/8 border border-primary/15 px-3 py-1.5 rounded-xl mb-1.5">
-                        {placedStudents[activeCard]?.company}
-                      </span>
-                      {placedStudents[activeCard]?.package && (
-                        <p className="text-sm font-extrabold text-success">{placedStudents[activeCard].package}</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Side stack */}
-                <div className="md:col-span-2 flex flex-col gap-4">
-                  <p className="text-xs font-bold text-on-surface-variant uppercase tracking-widest mb-1 px-1">Other Success Spotlights</p>
-                  {placedStudents
-                    .filter((_, i) => i !== activeCard)
-                    .slice(0, 2)
-                    .map((s) => {
-                      const originalIndex = placedStudents.indexOf(s);
-                      return (
-                        <button
-                          key={s.id}
-                          onClick={() => setActiveCard(originalIndex)}
-                          className="text-left bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-5 hover:border-primary/40 hover:shadow-md transition-all duration-200 group flex flex-col justify-between h-full"
-                        >
-                          <div className="flex items-center gap-3 mb-3">
-                            <div className="relative h-10 w-10 rounded-xl overflow-hidden border border-outline-variant/30 shrink-0">
-                              <Image src={s.image} alt={s.name} fill className="object-cover" />
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <p className="font-extrabold text-sm text-on-surface truncate">{s.name}</p>
-                              <p className="text-xs text-on-surface-variant truncate">{s.company}</p>
-                            </div>
-                            <ArrowUpRight className="h-4 w-4 text-on-surface-variant/40 group-hover:text-primary transition-colors shrink-0" />
-                          </div>
-                          {s.testimonial && (
-                            <p className="text-xs text-on-surface-variant line-clamp-2 leading-relaxed italic mb-2">
-                              &ldquo;{s.testimonial}&rdquo;
-                            </p>
-                          )}
-                          <div className="flex items-center justify-between pt-2.5 border-t border-outline-variant/10 text-[10px] font-bold text-primary uppercase tracking-wider">
-                            <span>View Profile</span>
-                            {s.package && <span className="text-success">{s.package}</span>}
-                          </div>
-                        </button>
-                      );
-                    })}
-                </div>
-              </div>
-
-              {/* Dots */}
-              <div className="flex items-center gap-2 justify-center mt-8">
-                {placedStudents.map((_, i) => (
-                  <button
-                    key={i}
-                    onClick={() => setActiveCard(i)}
-                    className={cn(
-                      "rounded-full transition-all duration-300",
-                      i === activeCard
-                        ? "w-6 h-2 bg-primary"
-                        : "w-2 h-2 bg-outline-variant hover:bg-primary/40"
-                    )}
-                    aria-label={`Go to student ${i + 1}`}
-                  />
+              <div className="mt-6 flex flex-wrap gap-3">
+                {placementEmbedPosts.map((url, index) => (
+                  <a
+                    key={url}
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex items-center gap-2 rounded-full border border-[#d9e8f2] bg-white px-3.5 py-2 text-left shadow-sm transition-all hover:-translate-y-0.5 hover:border-[#bd168e]"
+                  >
+                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#fff0fa] text-[#bd168e]">
+                      <Instagram className="h-3.5 w-3.5" />
+                    </span>
+                    <span className="text-[11px] font-black uppercase tracking-[0.12em] text-[#251324]">
+                      Post {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <ArrowUpRight className="h-3.5 w-3.5 text-[#6f5c6f]/60 transition-colors group-hover:text-[#bd168e]" />
+                  </a>
                 ))}
               </div>
             </>
@@ -642,42 +511,42 @@ export default function PlacementsPage() {
         </div>
       </div>
 
-      {/* ── ALL GRADUATES GRID WITH DYNAMIC FILTERS ─────────────────── */}
-      <div id="all-graduates" className="max-w-7xl mx-auto px-6 py-24">
+      {/* ── ALL GRADUATES GRID REGISTRY ────────────────────────────────── */}
+      <div id="all-graduates" className="max-w-7xl mx-auto px-6 py-24 text-left">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-12 gap-6">
           <div>
-            <p className="text-xs font-bold text-primary uppercase tracking-widest mb-2">Alumni Registry</p>
-            <h2 className="text-3xl md:text-4xl font-extrabold font-heading text-on-surface tracking-tight">Every Success, Counted</h2>
-            <p className="text-sm text-on-surface-variant mt-2 max-w-xl font-light">
+            <p className="text-xs font-black text-[#0b5f99] uppercase tracking-widest mb-2 font-mono">Alumni Registry</p>
+            <h2 className="text-3xl md:text-4xl font-black font-heading text-[#251324] tracking-tight">Every Success, Tracked</h2>
+            <p className="text-sm text-[#675667] mt-2 max-w-xl font-medium">
               Browse through our graduates who have launched successful careers at leading banks, software giants, and MNCs.
             </p>
           </div>
 
           {/* Search Box */}
           <div className="relative w-full md:w-80 shrink-0">
-            <Search className="absolute left-4 top-3.5 h-4.5 w-4.5 text-on-surface-variant/40" />
+            <Search className="absolute left-4 top-3.5 h-4.5 w-4.5 text-[#6f5c6f]/40" />
             <input
               type="text"
-              placeholder="Search by student, designation, company..."
+              placeholder="Search student, designation, company..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl pl-11 pr-4 py-3.5 text-sm text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all"
+              className="w-full bg-[#fffaf5] border border-[#d9e8f2] rounded-xl pl-11 pr-4 py-3.5 text-sm text-[#251324] placeholder:text-[#6f5c6f]/40 focus:outline-none focus:border-[#0b5f99] focus:ring-2 focus:ring-[#0b5f99]/15 shadow-sm transition-all"
             />
           </div>
         </div>
 
         {/* Quick Filters */}
         <div className="flex flex-wrap gap-2 mb-8 items-center">
-          <span className="text-xs font-bold text-on-surface-variant/60 uppercase tracking-wider mr-2">Filter by Partner:</span>
+          <span className="text-xs font-bold text-[#6f5c6f]/60 uppercase tracking-wider mr-2">Filter by Partner:</span>
           {availableCompanies.slice(0, 8).map((comp) => (
             <button
               key={comp}
               onClick={() => setSelectedTag(comp)}
               className={cn(
-                "text-xs font-bold px-4 py-2 rounded-xl border transition-all duration-200",
+                "text-xs font-extrabold px-4 py-2 rounded-xl border transition-all duration-200 cursor-pointer",
                 selectedTag === comp
-                  ? "bg-primary border-primary text-white shadow-sm"
-                  : "bg-surface-container border-outline-variant/30 text-on-surface-variant hover:border-primary/40 hover:text-primary"
+                  ? "bg-[#0b5f99] border-[#0b5f99] text-white shadow-sm"
+                  : "bg-[#fffaf5] border-[#d9e8f2] text-[#6f5c6f] hover:border-[#0b5f99] hover:text-[#0b5f99]"
               )}
             >
               {comp}
@@ -687,7 +556,7 @@ export default function PlacementsPage() {
             <select
               value={selectedTag}
               onChange={(e) => setSelectedTag(e.target.value)}
-              className="text-xs font-bold bg-surface-container border border-outline-variant/30 text-on-surface-variant px-3 py-2 rounded-xl focus:outline-none focus:border-primary"
+              className="text-xs font-bold bg-[#fffaf5] border border-[#d9e8f2] text-[#6f5c6f] px-3 py-2 rounded-xl focus:outline-none focus:border-[#0b5f99]"
             >
               <option value="All">More Companies...</option>
               {availableCompanies.slice(8).map((comp) => (
@@ -699,13 +568,13 @@ export default function PlacementsPage() {
 
         {/* Results Grid */}
         {filteredStudents.length === 0 ? (
-          <div className="text-center py-16 bg-surface-container-low rounded-3xl border border-outline-variant/20">
-            <Users className="h-12 w-12 text-on-surface-variant/30 mx-auto mb-4" />
-            <p className="text-base font-bold text-on-surface">No records match your query</p>
-            <p className="text-xs text-on-surface-variant mt-1.5">Try clearing filters or checking spelling.</p>
+          <div className="text-center py-16 bg-[#fffaf5] rounded-2xl border border-[#d9e8f2]">
+            <Users className="h-12 w-12 text-[#6f5c6f]/30 mx-auto mb-4" />
+            <p className="text-base font-bold text-[#251324]">No records match your query</p>
+            <p className="text-xs text-[#6f5c6f] mt-1.5">Try clearing filters or checking spelling.</p>
             <button
               onClick={() => { setSearchQuery(""); setSelectedTag("All"); }}
-              className="mt-4 bg-primary/8 border border-primary/20 text-primary font-bold text-xs px-4 py-2 rounded-xl hover:bg-primary hover:text-white transition-all"
+              className="mt-4 bg-[#0b5f99]/10 border border-[#0b5f99]/20 text-[#0b5f99] font-bold text-xs px-4 py-2 rounded-xl hover:bg-[#0b5f99] hover:text-white transition-all cursor-pointer"
             >
               Clear Filters
             </button>
@@ -715,12 +584,12 @@ export default function PlacementsPage() {
             {filteredStudents.map((s, i) => (
               <div
                 key={s.id}
-                className="group bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-6 hover:border-primary/30 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
+                className="group bg-[#fffaf5] border border-[#d9e8f2] rounded-2xl p-6 hover:border-[#0b5f99] hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col justify-between"
                 style={{ animationDelay: `${i * 30}ms` }}
               >
                 <div>
                   <div className="flex items-center gap-4 mb-4">
-                    <div className="relative h-12 w-12 rounded-xl overflow-hidden border border-outline-variant/30 shrink-0">
+                    <div className="relative h-12 w-12 rounded-xl overflow-hidden border border-[#d9e8f2] shrink-0 shadow-sm">
                       <Image
                         src={s.image || "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80"}
                         alt={s.name}
@@ -729,23 +598,23 @@ export default function PlacementsPage() {
                       />
                     </div>
                     <div className="min-w-0">
-                      <p className="font-extrabold text-on-surface text-base truncate">{s.name}</p>
-                      <p className="text-xs text-on-surface-variant truncate font-medium">{s.designation}</p>
+                      <p className="font-black text-[#251324] text-base truncate">{s.name}</p>
+                      <p className="text-xs text-[#6f5c6f] truncate font-semibold">{s.designation}</p>
                     </div>
                   </div>
                   {s.testimonial && (
-                    <p className="text-xs text-on-surface-variant leading-relaxed mb-4 italic font-medium">
+                    <p className="text-xs text-[#6f5c6f] leading-relaxed mb-4 italic font-medium">
                       &ldquo;{s.testimonial}&rdquo;
                     </p>
                   )}
                 </div>
 
-                <div className="flex items-center justify-between pt-4 border-t border-outline-variant/20 mt-2">
-                  <span className="text-xs font-bold text-primary bg-primary/6 border border-primary/12 px-3 py-1 rounded-full truncate max-w-[65%]">
+                <div className="flex items-center justify-between pt-4 border-t border-[#d9e8f2]/60 mt-2">
+                  <span className="text-xs font-bold text-[#0b5f99] bg-[#e8f6ff] border border-[#0b5f99]/15 px-3 py-1 rounded-full truncate max-w-[65%]">
                     {s.company}
                   </span>
                   {s.package && (
-                    <span className="text-xs font-extrabold text-success bg-success/6 border border-success/15 px-2.5 py-1 rounded-full">
+                    <span className="text-xs font-extrabold text-[#bd168e] bg-[#fffaf5] border border-[#bd168e]/15 px-2.5 py-1 rounded-full">
                       {s.package}
                     </span>
                   )}
@@ -756,95 +625,102 @@ export default function PlacementsPage() {
         )}
       </div>
 
-      {/* ── REGISTRATION FORMS ───────────────────────────────────────── */}
-      <div id="join-network" className="bg-surface-container-low border-t border-outline-variant/20 py-24">
-        <div className="max-w-5xl mx-auto px-6">
+      {/* ── REGISTRATION FORMS (Asymmetric shapes & mascot) ─────────────── */}
+      <div id="join-network" className="bg-[#fffaf5] border-t border-[#d9e8f2] py-24 relative overflow-hidden">
+        {/* Asymmetric brand backing highlight */}
+        <div
+          className="absolute inset-y-0 right-0 -z-10 w-[35%] bg-[#e8f6ff] opacity-80 hidden lg:block"
+          style={{ clipPath: "polygon(20% 0, 100% 0, 100% 100%, 0 100%)" }}
+        />
+
+        <div className="max-w-5xl mx-auto px-6 relative z-10">
           <div className="text-center max-w-xl mx-auto mb-16">
-            <p className="text-xs font-bold text-primary uppercase tracking-widest mb-2">Unique Mentors Network</p>
-            <h2 className="text-3xl md:text-4xl font-extrabold font-heading text-on-surface tracking-tight">Join Our Placement Desk</h2>
-            <p className="mt-3 text-on-surface-variant text-base font-light">
+            <p className="text-xs font-black text-[#0b5f99] uppercase tracking-widest mb-2 font-mono">Unique Mentors Network</p>
+            <h2 className="text-3xl md:text-4xl font-black font-heading text-[#251324] tracking-tight">Join Our Placement Desk</h2>
+            <p className="mt-3 text-[#675667] text-base font-semibold">
               Whether you are a trained graduate looking for a career launchpad or an employer seeking pre-screened professionals, get connected here.
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-12 gap-8 items-start">
-            {/* Sidebar Highlight Box */}
+          <div className="grid lg:grid-cols-12 gap-8 items-start text-left">
+            {/* Sidebar Cards Column */}
             <div className="lg:col-span-4 space-y-6">
-              <div className="relative bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 shadow-sm overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full" />
-                <h4 className="font-extrabold text-base text-on-surface mb-4 flex items-center gap-2">
 
+              {/* Recruiter Perks */}
+              <div className="relative bg-white border border-[#d9e8f2] rounded-3xl p-6 shadow-sm overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-[#0b5f99]/5 rounded-bl-full pointer-events-none" />
+                <h4 className="font-black text-base text-[#251324] mb-4 flex items-center gap-2">
                   Recruiter Benefits
                 </h4>
-                <ul className="space-y-3.5 text-xs text-on-surface-variant leading-relaxed font-medium">
+                <ul className="space-y-3.5 text-xs text-[#6f5c6f] leading-relaxed font-semibold">
                   <li className="flex items-start gap-2.5">
-                    <CheckCircle className="h-4 w-4 text-success mt-0.5 shrink-0" />
-                    <span><strong>Pre-screened Talent:</strong> Candidates fully evaluated on domain skills, communications, and logical aptitude.</span>
+                    <CheckCircle className="h-4 w-4 text-[#0b5f99] mt-0.5 shrink-0" />
+                    <span><strong>Pre-screened Talent:</strong> Candidates evaluated on domain skills, communications, and logical aptitude.</span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <CheckCircle className="h-4 w-4 text-success mt-0.5 shrink-0" />
-                    <span><strong>Zero Recruitment Fees:</strong> No hidden charges for matching or listing corporate vacancies.</span>
+                    <CheckCircle className="h-4 w-4 text-[#0b5f99] mt-0.5 shrink-0" />
+                    <span><strong>Zero Recruitment Fees:</strong> No hidden charges for matching or listing vacancies.</span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <CheckCircle className="h-4 w-4 text-success mt-0.5 shrink-0" />
+                    <CheckCircle className="h-4 w-4 text-[#0b5f99] mt-0.5 shrink-0" />
                     <span><strong>Immediate Deployment:</strong> Graduates prepared for immediate onboarding in corporate functions.</span>
                   </li>
                 </ul>
               </div>
 
-              <div className="relative bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-6 shadow-sm overflow-hidden">
-                <div className="absolute top-0 right-0 w-24 h-24 bg-success/5 rounded-bl-full" />
-                <h4 className="font-extrabold text-base text-on-surface mb-4 flex items-center gap-2">
-                  <GraduationCap className="h-4.5 w-4.5 text-primary shrink-0" />
+              {/* Candidate Perks */}
+              <div className="relative bg-white border border-[#d9e8f2] rounded-3xl p-6 shadow-sm overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-[#bd168e]/5 rounded-bl-full pointer-events-none" />
+                <h4 className="font-black text-base text-[#251324] mb-4 flex items-center gap-2">
                   Candidate Perks
                 </h4>
-                <ul className="space-y-3.5 text-xs text-on-surface-variant leading-relaxed font-medium">
+                <ul className="space-y-3.5 text-xs text-[#6f5c6f] leading-relaxed font-semibold">
                   <li className="flex items-start gap-2.5">
-                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                    <CheckCircle className="h-4 w-4 text-[#bd168e] mt-0.5 shrink-0" />
                     <span><strong>Elite Partner Network:</strong> High-priority vacancy alerts from TCS, Federal Bank, HDFC, and more.</span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
+                    <CheckCircle className="h-4 w-4 text-[#bd168e] mt-0.5 shrink-0" />
                     <span><strong>Mock Interview Prep:</strong> Intense practice rounds coached directly by corporate hiring heads.</span>
                   </li>
                   <li className="flex items-start gap-2.5">
-                    <CheckCircle className="h-4 w-4 text-primary mt-0.5 shrink-0" />
-                    <span><strong>Lifetime Support:</strong> Continuous career mentorship, CV engineering, and vacancy dispatches.</span>
+                    <CheckCircle className="h-4 w-4 text-[#bd168e] mt-0.5 shrink-0" />
+                    <span><strong>Continuous Support:</strong> Lifetime career mentorship, CV engineering, and vacancy dispatches.</span>
                   </li>
                 </ul>
               </div>
 
-              {/* Coordinator Hotline Card */}
-              <div className="gradient-primary text-white rounded-3xl p-6 shadow-md relative overflow-hidden">
-                <div className="absolute bottom-0 right-0 opacity-10">
+              {/* Coordinator Hotline Card (Rotated, Double Border) */}
+              <div className="bg-gradient-to-br from-[#0b5f99] to-[#057bd2] text-white rounded-3xl p-6 shadow-2xl relative overflow-hidden rotate-[-1.5deg] border-[5px] border-white hover:rotate-0 hover:scale-[1.01] transition-all duration-300">
+                <div className="absolute bottom-0 right-0 opacity-10 pointer-events-none">
                   <Send className="h-32 w-32 translate-x-8 translate-y-8" />
                 </div>
-                <h4 className="font-extrabold text-base mb-2">Need Immediate Hiring?</h4>
-                <p className="text-xs text-white/80 leading-relaxed mb-4">Connect directly with our Campus Relations Coordinator on WhatsApp for rapid scheduling.</p>
+                <h4 className="font-black text-base mb-2">Need Immediate Hiring?</h4>
+                <p className="text-xs text-white/80 leading-relaxed mb-4 font-semibold">Connect directly with our Campus Relations Coordinator on WhatsApp for rapid vacancy reviews.</p>
                 <a
                   href="https://wa.me/918137064888?text=Hello%20Unique%20Mentors%20Placement%20Desk%2C%20we%20want%20to%20hire%20from%20your%20campus."
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-white text-primary hover:bg-white/95 font-bold text-xs px-5 py-3 rounded-xl shadow-sm transition-all duration-300"
+                  className="inline-flex items-center gap-2 bg-white text-[#0b5f99] hover:bg-white/95 font-black text-xs px-5 py-3 rounded-lg shadow-md transition-all duration-300 hover:scale-105"
                 >
                   WhatsApp Hiring Desk
                 </a>
               </div>
             </div>
 
-            {/* Forms Main Frame */}
-            <div className="lg:col-span-8 space-y-6">
-              {/* Tabs */}
-              <div className="flex bg-surface-container border border-outline-variant/35 rounded-2xl p-1 shadow-sm">
+            {/* Form Column */}
+            <div className="lg:col-span-8 space-y-6 relative">
+              {/* Tab Selector */}
+              <div className="flex bg-white border border-[#d9e8f2] rounded-2xl p-1 shadow-sm">
                 {(["seeker", "employer"] as const).map((tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
                     className={cn(
-                      "flex-1 py-3.5 px-4 rounded-xl text-sm font-bold transition-all duration-300 relative",
+                      "flex-1 py-3.5 px-4 rounded-xl text-sm font-bold transition-all duration-300 relative cursor-pointer",
                       activeTab === tab
-                        ? "bg-surface-container-lowest text-primary shadow-sm"
-                        : "text-on-surface-variant hover:text-on-surface"
+                        ? "bg-[#0b5f99] text-white shadow-sm"
+                        : "text-[#6f5c6f] hover:text-[#251324]"
                     )}
                   >
                     {tab === "seeker" ? (
@@ -860,14 +736,14 @@ export default function PlacementsPage() {
                 ))}
               </div>
 
-              {/* Tab Form Card */}
-              <div className="bg-surface-container-lowest border border-outline-variant/30 rounded-3xl p-8 shadow-sm">
+              {/* Form Content Wrapper */}
+              <div className="bg-white border border-[#d9e8f2] rounded-3xl p-8 shadow-2xl relative">
                 {activeTab === "seeker" ? (
                   <form onSubmit={handleSeekerSubmit} className="space-y-6">
                     <div>
-                      <h3 className="text-xl font-extrabold font-heading text-on-surface">Career Registration Desk</h3>
-                      <p className="text-xs text-on-surface-variant mt-1.5 leading-relaxed font-light">
-                        Join our pre-placement registration system. Once reviewed, our placement specialist will schedule a skills-mapping interview.
+                      <h3 className="text-xl font-black font-heading text-[#251324]">Job Seeker Registration</h3>
+                      <p className="text-xs text-[#6f5c6f] mt-1.5 leading-relaxed font-semibold">
+                        Submit your details to enter our placements database. Our recruitment officer will contact you today to schedule a mapping interview.
                       </p>
                     </div>
 
@@ -935,7 +811,7 @@ export default function PlacementsPage() {
 
                     <div className="grid sm:grid-cols-2 gap-4">
                       <div>
-                        <label className={labelClass}>Professional Experience</label>
+                        <label className={labelClass}>Experience Level</label>
                         <select
                           value={seekerForm.experience}
                           onChange={(e) => setSeekerForm({ ...seekerForm, experience: e.target.value })}
@@ -951,7 +827,7 @@ export default function PlacementsPage() {
                         <input
                           type="text"
                           required
-                          placeholder="E.g., Core Java, Financial Accounting, Excel..."
+                          placeholder="E.g., Core Java, Accounting, Excel..."
                           value={seekerForm.skills}
                           onChange={(e) => setSeekerForm({ ...seekerForm, skills: e.target.value })}
                           className={inputClass}
@@ -973,7 +849,7 @@ export default function PlacementsPage() {
                     <button
                       type="submit"
                       disabled={seekerSubmitting}
-                      className="w-full bg-primary hover:bg-primary-container text-white py-4 px-6 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
+                      className="w-full bg-[#bd168e] text-white font-extrabold shadow-md py-4 px-6 rounded-[8px] text-sm flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#981173] hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                       {seekerSubmitting ? (
                         <><Loader2 className="h-4.5 w-4.5 animate-spin" /> Submitting Profile...</>
@@ -985,9 +861,9 @@ export default function PlacementsPage() {
                 ) : (
                   <form onSubmit={handleEmployerSubmit} className="space-y-6">
                     <div>
-                      <h3 className="text-xl font-extrabold font-heading text-on-surface">Campus Recruitment Request</h3>
-                      <p className="text-xs text-on-surface-variant mt-1.5 leading-relaxed font-light">
-                        Log your vacancy requirements in our placement console. Our Corporate Relations team will generate a pre-screened talent shortlist and send it to you within 1 business day.
+                      <h3 className="text-xl font-black font-heading text-[#251324]">Recruiter vacancy details</h3>
+                      <p className="text-xs text-[#6f5c6f] mt-1.5 leading-relaxed font-semibold">
+                        Log your vacancies in our coordinate console. Our placement cell will create a pre-screened talent shortlist and send it to you within 1 business day.
                       </p>
                     </div>
 
@@ -1058,7 +934,7 @@ export default function PlacementsPage() {
                       <input
                         type="text"
                         required
-                        placeholder="E.g., Relationship Manager, Junior Software Engineer, Associate Officer"
+                        placeholder="E.g., Relationship Manager, Junior Software Engineer"
                         value={employerForm.designationsNeeded}
                         onChange={(e) => setEmployerForm({ ...employerForm, designationsNeeded: e.target.value })}
                         className={inputClass}
@@ -1093,7 +969,7 @@ export default function PlacementsPage() {
                     <button
                       type="submit"
                       disabled={employerSubmitting}
-                      className="w-full bg-primary hover:bg-primary-container text-white py-4 px-6 rounded-xl font-bold text-sm transition-all flex items-center justify-center gap-2 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
+                      className="w-full bg-[#bd168e] text-white font-extrabold shadow-md py-4 px-6 rounded-[8px] text-sm flex items-center justify-center gap-2 cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#981173] hover:shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                       {employerSubmitting ? (
                         <><Loader2 className="h-4.5 w-4.5 animate-spin" /> Shortlisting Candidates...</>
@@ -1104,6 +980,18 @@ export default function PlacementsPage() {
                   </form>
                 )}
               </div>
+
+              {/* Mascot decoration placed near forms */}
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0, rotate: 10 }}
+                whileInView={{ scale: 1, opacity: 1, rotate: -3 }}
+                viewport={{ once: true }}
+                transition={{ type: "spring", bounce: 0.5, delay: 0.4 }}
+                className="absolute -right-10 -bottom-14 z-20 w-32 drop-shadow-[0_15px_15px_rgba(0,0,0,0.15)] pointer-events-none hidden md:block"
+              >
+                <PencilMascot className="w-full" compact />
+              </motion.div>
+
             </div>
           </div>
         </div>
