@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { generateSeoMetadata } from "@/lib/seo";
-import { buildOrganizationSchema } from "@/lib/structured-data";
+import { buildHomepageSchema } from "@/lib/structured-data";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { HeroBanner } from "@/components/sections/HeroBanner";
 import { ProgramShowcase } from "@/components/sections/ProgramShowcase";
@@ -16,18 +16,20 @@ export const revalidate = 3600;
 
 export function generateMetadata(): Metadata {
   return generateSeoMetadata({
-    title: "Finishing School for Students & Professionals | Unique Mentors",
+    title: "Unique Mentors - Finishing School in Kochi, Kerala",
     description:
-      "Unique Mentors is a premium finishing school offering activity-led programs for school students, college graduates, healthcare aspirants, and young professionals to build confidence and career readiness.",
+      "Unique Mentors is a finishing school in Kochi, Kerala offering communication, interview prep, grooming, financial literacy, etiquette, leadership, and career readiness programs.",
     path: "/",
     keywords: [
+      "Unique Mentors Kochi",
+      "Unique Mentors Kerala",
       "best finishing school",
       "finishing school india",
       "finishing school kerala",
-      "finishing school bangalore",
+      "finishing school kochi",
       "youth finishing school",
-      "finishing school courses"
-    ]
+      "finishing school courses",
+    ],
   });
 }
 
@@ -59,11 +61,11 @@ const mockTestimonials: TestimonialData[] = [
 ];
 
 export default function HomePage() {
-  const orgSchema = buildOrganizationSchema();
+  const homepageSchema = buildHomepageSchema();
 
   return (
     <>
-      <JsonLd data={orgSchema} />
+      <JsonLd data={homepageSchema} />
       <HeroBanner />
       <ProgramShowcase />
       <TrainingExperienceCarousel />

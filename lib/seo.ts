@@ -31,11 +31,18 @@ export function generateSeoMetadata({
     image ?? `${SITE_URL}/api/og?title=${encodeURIComponent(title)}`;
 
   const defaultKeywords = [
+    "Unique Mentors",
+    "Unique Mentors finishing school",
     "finishing school",
+    "finishing school Kochi",
+    "finishing school Kerala",
     "finishing school program",
     "finishing school in India",
     "finishing school in Kerala",
     "finishing school in UAE",
+    "skill development courses",
+    "interview preparation",
+    "professional grooming",
     "personality development",
     "career readiness",
     "corporate etiquette",
@@ -57,11 +64,14 @@ export function generateSeoMetadata({
     keywords: mergedKeywords,
     metadataBase: new URL(SITE_URL),
     alternates: { canonical: url },
+    publisher: SITE_NAME,
+    category: "education",
     openGraph: {
       title,
       description,
       url,
       siteName: SITE_NAME,
+      locale: "en_IN",
       type,
       images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
       ...(publishedTime && { publishedTime }),

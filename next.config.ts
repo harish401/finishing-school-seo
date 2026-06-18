@@ -13,6 +13,16 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "images.unsplash.com" },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "uniquementors.org" }],
+        destination: "https://www.uniquementors.org/:path*",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {

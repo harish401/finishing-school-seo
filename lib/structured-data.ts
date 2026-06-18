@@ -1,8 +1,8 @@
 import type {
+  Thing,
   WithContext,
   Course as CourseSD,
   Article,
-  Organization,
   BreadcrumbList,
   FAQPage,
 } from "schema-dts";
@@ -37,30 +37,169 @@ interface FaqItem {
   answer: string;
 }
 
+const PHONE_NUMBER = "+919544774599";
+const ADDRESS = {
+  streetAddress:
+    "1st Floor, Jyothy, 62/6284A, Ernakulathappan Temple Road, near IMA Blood Bank, Pallimukku",
+  addressLocality: "Kochi",
+  addressRegion: "Kerala",
+  postalCode: "682011",
+  addressCountry: "IN",
+};
+
+const MAIN_NAVIGATION = [
+  { name: "Contact Us", href: "/contact" },
+  { name: "About Us", href: "/about" },
+  { name: "Courses", href: "/courses" },
+  { name: "School Programs", href: "/programs/schools" },
+  { name: "College Programs", href: "/programs/colleges" },
+  { name: "Healthcare Programs", href: "/programs/healthcare" },
+  { name: "Placements", href: "/placements" },
+  { name: "Gallery", href: "/gallery" },
+];
+
 /**
  * Organization schema for homepage — Google Knowledge Panel
  */
-export function buildOrganizationSchema(): WithContext<Organization> {
+export function buildOrganizationSchema(): WithContext<Thing> {
   return {
     "@context": "https://schema.org",
-    "@type": "Organization",
+    "@type": "EducationalOrganization",
+    "@id": `${SITE_URL}/#organization`,
     name: SITE_NAME,
+    alternateName: [
+      "Unique Mentors Finishing School",
+      "Unique Mentors Kochi",
+      "Unique Mentors Kerala",
+    ],
     url: SITE_URL,
-    logo: `${SITE_URL}/icons/logo.png`,
+    logo: `${SITE_URL}/logo.svg`,
+    image: `${SITE_URL}/logo.svg`,
     description:
-      "Unique Mentors offers colorful finishing school programs for school students, college graduates, healthcare aspirants, and young professionals, with practical training in confidence, communication, career readiness, etiquette, financial literacy, and leadership.",
+      "Unique Mentors is a finishing school and coaching centre in Kochi, Kerala offering activity-led training in communication, interview preparation, grooming, financial literacy, etiquette, leadership, and career readiness.",
+    telephone: PHONE_NUMBER,
+    email: "info@uniquementors.org",
+    address: {
+      "@type": "PostalAddress",
+      ...ADDRESS,
+    },
+    areaServed: [
+      { "@type": "City", name: "Kochi" },
+      { "@type": "AdministrativeArea", name: "Kerala" },
+      { "@type": "Country", name: "India" },
+    ],
     sameAs: [
-      "https://instagram.com/uniquementors",
-      "https://facebook.com/uniquementors",
-      "https://linkedin.com/company/uniquementors",
-      "https://youtube.com/@uniquementors",
+      "https://www.instagram.com/unique_mentors/",
+      "https://www.facebook.com/uniquementors",
+      "https://www.linkedin.com/company/uniquementors",
     ],
     contactPoint: {
       "@type": "ContactPoint",
+      telephone: PHONE_NUMBER,
       contactType: "customer service",
-      availableLanguage: ["English", "Hindi"],
+      areaServed: "IN",
+      availableLanguage: ["English", "Hindi", "Malayalam"],
     },
-  };
+  } as WithContext<Thing>;
+}
+
+/**
+ * Homepage graph schema that connects brand, local entity, website, and
+ * navigation links for stronger branded search and sitelink signals.
+ */
+export function buildHomepageSchema(): WithContext<Thing> {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": ["EducationalOrganization", "LocalBusiness"],
+        "@id": `${SITE_URL}/#organization`,
+        name: SITE_NAME,
+        alternateName: [
+          "Unique Mentors Finishing School",
+          "Unique Mentors Kochi",
+          "Unique Mentors Kerala",
+        ],
+        url: SITE_URL,
+        logo: `${SITE_URL}/logo.svg`,
+        image: `${SITE_URL}/logo.svg`,
+        description:
+          "Unique Mentors is a finishing school and coaching centre in Kochi, Kerala offering activity-led training in communication, interview preparation, grooming, financial literacy, etiquette, leadership, and career readiness.",
+        telephone: PHONE_NUMBER,
+        priceRange: "$$",
+        address: {
+          "@type": "PostalAddress",
+          ...ADDRESS,
+        },
+        geo: {
+          "@type": "GeoCoordinates",
+          latitude: 9.9677,
+          longitude: 76.2882,
+        },
+        openingHoursSpecification: [
+          {
+            "@type": "OpeningHoursSpecification",
+            dayOfWeek: [
+              "Monday",
+              "Tuesday",
+              "Wednesday",
+              "Thursday",
+              "Friday",
+              "Saturday",
+            ],
+            opens: "09:00",
+            closes: "17:00",
+          },
+        ],
+        areaServed: [
+          { "@type": "City", name: "Kochi" },
+          { "@type": "AdministrativeArea", name: "Kerala" },
+          { "@type": "Country", name: "India" },
+        ],
+        knowsAbout: [
+          "Finishing school programs",
+          "Communication skills",
+          "Interview preparation",
+          "Professional grooming",
+          "Financial literacy",
+          "Personality development",
+          "Career readiness",
+          "Healthcare licensing exam training",
+        ],
+        sameAs: [
+          "https://www.instagram.com/unique_mentors/",
+          "https://www.facebook.com/uniquementors",
+          "https://www.linkedin.com/company/uniquementors",
+        ],
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        name: SITE_NAME,
+        alternateName: "Unique Mentors Finishing School",
+        url: SITE_URL,
+        publisher: { "@id": `${SITE_URL}/#organization` },
+        inLanguage: "en-IN",
+      },
+      {
+        "@type": "WebPage",
+        "@id": `${SITE_URL}/#webpage`,
+        url: SITE_URL,
+        name: "Unique Mentors - Finishing School in Kochi, Kerala",
+        description:
+          "Activity-led finishing school programs for school students, college graduates, healthcare aspirants, and professionals.",
+        isPartOf: { "@id": `${SITE_URL}/#website` },
+        about: { "@id": `${SITE_URL}/#organization` },
+        inLanguage: "en-IN",
+      },
+      ...MAIN_NAVIGATION.map((item, index) => ({
+        "@type": "SiteNavigationElement",
+        position: index + 1,
+        name: item.name,
+        url: `${SITE_URL}${item.href}`,
+      })),
+    ],
+  } as unknown as WithContext<Thing>;
 }
 
 /**

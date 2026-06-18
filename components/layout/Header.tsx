@@ -92,7 +92,12 @@ export function Header() {
           <nav className="flex h-16 items-center justify-between lg:h-20">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2">
-              <BrandLogo className="h-9 w-auto md:h-11" />
+              <BrandLogo 
+                className={cn(
+                  "h-9 w-auto md:h-11 transition-all duration-300", 
+                  !scrolled && "brightness-0 invert"
+                )} 
+              />
             </Link>
 
             {/* Desktop Navigation */}

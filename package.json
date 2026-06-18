@@ -7,8 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "generate:types": "payload generate:types",
-    "postbuild": "next-sitemap"
+    "generate:types": "payload generate:types"
   },
   "dependencies": {
     "@auth/core": "^0.37.0",
